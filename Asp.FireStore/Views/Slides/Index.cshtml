@@ -1,0 +1,116 @@
+﻿@model List<Slides>
+@inject ISlidesRepository slide
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Gallery</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Gallery</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h4 class="card-title">Slides Gallery</h4>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="row">
+                                @{
+                                    var undeletedSlides = await slide.GetAllAsync("Slides", x => x.Stander.IsActive == true);
+                                    foreach (var item in undeletedSlides)
+                                    {
+                                        <div class="col-sm-2">
+                                            <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-start">
+                                                <a class="dropdown-item" asp-route-id="@item.Id" onclick="confirmDelete('@item.Id')">Delete</a>
+
+                                            </div>
+                                            <a href="#" data-toggle="lightbox" data-title="sample1-white" data-gallery="gallery">
+                                                <img src="@item.ImageUrl" class="img-fluid mb-2" alt="Slides Image" />
+                                            </a>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <a asp-action="Add" asp-controller="Slides">
+                                        <button class="btn btn-primary float-right">
+                                            Add
+                                        </button>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="card card-danger">
+                        <div class="card-header">
+                            <h4 class="card-title">Deleted Slide Gallery</h4>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="row">
+                                @{
+                                    var deletedSlides = await slide.GetAllAsync("Slides", x => x.Stander.IsActive == false);
+                                    foreach (var item in deletedSlides)
+                                    {
+                                        <div class="col-sm-2">
+                                            <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                                <i class="bi bi-three-dots-vertical"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-start">
+                                                <a class="dropdown-item" asp-route-id="@item.Id" asp-action="Restore" asp-controller="Slides">Restore</a>
+                                            </div>
+                                            <a href="#" data-toggle="lightbox" data-title="sample1-white" data-gallery="gallery">
+                                                <img src="@item.ImageUrl" class="img-fluid mb-2" alt="Slides Image" />
+                                            </a>
+                                        </div>
+                                    }
+                                }
+                            </div>
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+<script>
+    function confirmDelete(id) {
+        swal({
+            title: "هل أنت متأكد؟",
+            text: "بمجرد الحذف، لن تظهر الصورة على التطبيق!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    window.location.href = '/Slides/Remove/' + id;
+                }
+            });
+    }
+</script>

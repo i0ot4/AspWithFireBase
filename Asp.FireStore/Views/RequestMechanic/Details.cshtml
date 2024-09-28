@@ -1,0 +1,170 @@
+﻿@model RequestMechanic
+
+@inject IUsersRepository user
+
+<div>
+    <input id="tripDiracttion" hidden value="@Model.Id" />
+</div>
+
+<form asp-action="details" >
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Mechanic Details</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Mechanic Details</a></li>
+                        <li class="breadcrumb-item active">Details Mechanic Request</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+
+<!-- /.col -->
+<div class="col-md-12">
+    <!-- Widget: user widget style 1 -->
+    <div class="card card-widget widget-user">
+        <!-- Add the bg color to the header using any of the bg-* classes -->
+
+        <div class="widget-user-header bg-primary">
+        </div>
+        <div class="widget-user-image text-center">
+                    @{
+                        if (Model.Status == 0)
+                        {
+                            <img class="img-circle elevation-2" style="height:150px;width:150px" src="~/icons/GIF/location-time.gif" alt="User Avatar">
+                        }
+                        else if (Model.Status == 1)
+                        {
+                            <img class="img-circle elevation-2" style="height:150px;width:150px" src="~/icons/GIF/accept.gif" alt="User Avatar">
+                        }
+                        else if (Model.Status == 2)
+                        {
+                            <img class="img-circle elevation-2" style="height:150px;width:150px" src="~/icons/GIF/management.gif" alt="User Avatar">
+                        }
+                        else if (Model.Status == 3)
+                        {
+                            <img class="img-circle elevation-2" style="height:150px;width:150px;" src="~/icons/GIF/double-check.gif" alt="User Avatar">
+                        }
+                    }
+        </div>
+
+        <div class="card-footer">
+
+            <div class="row">
+
+                <div class="col-sm-6 border-right">
+                    <div class="description-block">
+                        <span class="description-text">Current Location</span>
+                       @* <h5 class="description-header">@Model.CurrentLocationName</h5>*@
+                        
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-6 border-right">
+                    <div class="description-block">
+                        <span class="description-text">Target LocationName</span>
+                        @*<h5 class="description-header">@Model.TargetLocationName</h5>*@
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <hr />
+            <div class="row">
+
+                <div class="col-sm-6 border-right">
+                    <div class="description-block">
+                        <span class="description-text">User</span>
+                                @{
+                                    if (Model.UserId == null)
+                                    {
+                                        <h5 class="description-header">This User Deleted</h5>
+                                    }
+                                    else
+                                    {
+                                        var userName = await user.GetById("Users", Model.UserId);
+                                        <h5 class="description-header">@userName.FirstName @userName.LastName</h5>
+                                    }
+                                }
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-6 border-right">
+                    <div class="description-block">
+                        <span class="description-text">Mechanic</span>
+                        @{
+                        
+                        if (Model.MechanicId == null)
+                        {
+                            <h5 class="description-header">No Mechanic</h5>
+                        }
+                        else
+                        {
+                            var mechanicName = await user.GetById("Users", Model.MechanicId);
+                            <h5 class="description-header">@mechanicName.FirstName @mechanicName.LastName</h5>
+                        }
+                    }
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-sm-8" id="map"></div>
+                <div class="col-sm-4 card-body">
+                    <div class="form-group">
+                      <label asp-for="Status"></label>
+                      @{
+                          if(Model.Status == 0)
+                          {
+                      <input class="form-control" value="Waiting" readonly>
+                          } 
+                          else if(Model.Status == 1)
+                          {
+                      <input class="form-control" value="Accpted" readonly>
+                          }
+                          else if(Model.Status == 2)
+                          {
+                      <input class="form-control" value="Fixing" readonly>
+                          }
+                          else if(Model.Status == 3)
+                          {
+                      <input class="form-control" value="Compeleted" readonly>
+                          }
+                      }
+                    </div>
+                    <div class="form-group">
+                      <label>Distance</label>
+                      <input id="getDistance" class="form-control" readonly>
+                    </div>
+                    <div class="form-group">
+                      <label>Duration</label>
+                      <input id="getDuration" class="form-control" readonly>
+                    </div>
+                </div>
+            </div>
+            <!-- /.row -->
+        </div>
+    </div>
+    <!-- /.widget-user -->
+</div>
+</div>
+</form>
+
+
+
+
+<script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-firestore.js"></script>
+<script src="~/maps/js/Google-Maps-GetLocation.js"></script>

@@ -1,0 +1,285 @@
+﻿@model List<Users>
+@inject IUsersRepository user
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Mechanic Accounts</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a>Home</a>
+                        </li>
+                        <li class="breadcrumb-item active">Mechanic Accounts</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-add bg-success">
+                        <div class="inner">
+                            @{
+                                var count1 = await user.Count("Users", x => x.UserType == "Mechanic" && x.Stander.IsDelete == false);
+                            }
+                            <h3>@count1</h3>
+
+                            <p>Active Accounts</p>
+                        </div>
+                        <div class="icon">
+                            <i class="bi bi-person"></i>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            @{
+                                var date = DateTime.UtcNow.Date;
+                                var count2 = await user.Count("Users", x => x.UserType == "Mechanic" && (x.Stander.CreatedAt == null ? false : x.Stander.CreatedAt.Value.ToDateTime().Date == date));
+                            }
+                            <h3>@count2</h3>
+
+                            <p>Today Register Accounts</p>
+                        </div>
+                        <div class="icon">
+                            <i class="bi bi-person"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            @{
+                                var count3 = await user.Count("Users", x => x.UserType == "Mechanic" && x.Stander.IsConfirm == false && x.Stander.IsDelete == false);
+                            }
+                            <h3>@count3</h3>
+
+                            <p>Waiting to confirm Accounts</p>
+                        </div>
+                        <div class="icon">
+                            <i class="bi bi-person-x"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            @{
+                                var count4 = await user.Count("Users", x => x.UserType == "Mechanic" && x.Stander.IsActive == false && x.Stander.IsDelete == false);
+                            }
+                            <h3>@count4</h3>
+
+                            <p>Blocked Accounts</p>
+                        </div>
+                        <div class="icon">
+                            <i class="bi bi-person-dash"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">TaxiDriver Table</h3>
+                            <div class="card-tools">
+                                <div class="icon">
+                                    <a asp-action="Print" asp-controller="Mechanic" class="btn btn-primary"><img class="nav-icon" style="height: 30px;width:30px" src="~/icons/printer.png" /></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0" style="height: 400px;">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th class="text-center">Photo</th>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Center Name</th>
+                                        <th class="text-center">Address</th>
+                                        <th class="text-center">Phone</th>
+                                        <th class="text-center">Delete</th>
+                                        <th class="text-center">Active</th>
+                                        <th class="text-center">Confirm</th>
+                                        <th class="text-center">Create at</th>
+                                        <th class="text-center">Update at</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ToList())
+                                    {
+                                        <tr>
+                                            <td>@item.Id</td>
+                                            <td>
+                                                <img class="profile-user-img img-fluid img-circle"
+                                                 style="height:100px; width:100px"
+                                                 src="@item.ProfilePicture"
+                                                 alt="User profile picture">
+                                            </td>
+                                            <td class="text-center">@item.FirstName @item.LastName</td>
+                                            <td class="text-center">@item.CenterName</td>
+                                            <td class="text-center">@item.Address</td>
+                                            <td class="text-center">@item.PhoneNumber</td>
+                                            @{
+                                                if (@item.Stander.IsDelete == true)
+                                                {
+                                                    <td class="text-center"><span class="badge badge-danger">ON</span></td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center"><span class="badge badge-success">OFF</span></td>
+                                                }
+                                            }
+                                            <td class="text-center">@item.Stander.IsActive</td>
+                                            @{
+                                                if (item.Stander.IsConfirm == false)
+                                                {
+                                                    <td class="text-center"><span class="badge badge-warning">waiting</span></td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center"><span class="badge badge-success">IsConfirm</span></td>
+                                                }
+
+                                                if (item.Stander.CreatedAt != null)
+                                                {
+                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                }
+
+                                                if (item.Stander.ModifiedAt != null)
+                                                {
+                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                }
+                                            }
+                                            <td>
+
+
+                                                <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <a asp-route-id="@item.Id" asp-action="Edit" asp-controller="Mechanic" class="dropdown-item">Edit</a>
+                                                    <a class="dropdown-item" asp-route-id="@item.Id" onclick="confirmDelete('@item.Id')">Delete</a>
+                                                    <a asp-route-id="@item.Id" asp-action="Profile" asp-controller="Mechanic" class="dropdown-item">Profile</a>
+                                                    <a asp-route-id="@item.Id" asp-action="Details" asp-controller="Mechanic" class="dropdown-item">Details</a>
+                                                    @{
+                                                        if (@item.Stander.IsActive == false)
+                                                        {
+                                                            <a asp-route-id="@item.Id" onclick="confirmActive('@item.Id')" class="dropdown-item">Active</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a asp-route-id="@item.Id" onclick="confirmDisActive('@item.Id')" class="dropdown-item">DisActive</a>
+                                                        }
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+
+
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<script>
+    function confirmDelete(id) {
+        swal({
+            title: "هل أنت متأكد؟",
+            text: "بمجرد الحذف، لن تتمكن من استعادة هذا العميل!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    window.location.href = '/Mechanic/Remove/' + id;
+                }
+            });
+    }
+    function confirmDisActive(id) {
+        swal({
+            title: "هل أنت متأكد؟",
+            text: "بمجرد الغاء التفعيل، لن يتمكن العميل من استخدام حسابة على التطبيق!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    window.location.href = '/Mechanic/DisActive/' + id;
+                }
+            });
+    }
+    function confirmActive(id) {
+        swal({
+            title: "هل أنت متأكد؟",
+            text: "بمجرد التفعيل، سوف يتمكن العميل من استخدام حسابة على التطبيق!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    window.location.href = '/Mechanic/Active/' + id;
+                }
+            });
+    }
+        /*function printTable() {
+        var divToPrint = document.querySelector('.table-responsive'); // Use the correct class name here
+        newWin = window.open("");
+        newWin.document.write(divToPrint.outerHTML);
+        newWin.print();
+        newWin.close();
+    }
+
+    $(document).ready(function () {
+        $('.table').DataTable();
+    });*/
+</script>
+

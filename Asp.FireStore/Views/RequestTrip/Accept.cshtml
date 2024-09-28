@@ -1,0 +1,105 @@
+﻿@model RequestTrip
+
+@inject IVehicleRepository vehicleRepository;
+
+
+@{
+
+    var vehicleList = await vehicleRepository.GetAllAsync("Vehicle");
+
+}
+
+<form class="row" asp-action="Accept" enctype="multipart/form-data">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Create New Trip Account</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">TaxiDriver Trips</a></li>
+                            <li class="breadcrumb-item active">New Trip</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-md-5">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">General</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="datetime" asp-for="Stander.CreatedAt" hidden />
+                        <div class="card-body">
+                            <div class="form-group">
+
+                                <label for="inputStatus" asp-for="VehicleId"></label>
+                                <select id="inputStatus" class="form-control custom-select" asp-for="VehicleId">
+                                    <option selected disabled>select one</option>
+                                    @foreach (var pay in vehicleList)
+                                    {
+                                        <option value="@pay.Id">@pay.CarType</option>
+                                    }
+
+                                </select>
+                                <span asp-validation-for="VehicleId"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>Distance</label>
+                                <input id="distance" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Duration</label>
+                                <input id="duration" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+
+                <div class="col-md-5">
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <h3 class="card-title">budget</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card-body" id="map"></div>
+
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <div class="row">
+                <div class="col-10">
+                    <a href="#" class="btn btn-secondary">Cancel</a>
+                    <input type="submit" value="Create" class="btn btn-success float-right">
+                </div>
+            </div>
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+</form>
+

@@ -1,0 +1,179 @@
+﻿@model Users
+
+
+
+<form asp-action="Details">
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Show Details</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Customer Details</a></li>
+                        <li class="breadcrumb-item active">Customer Account Details</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+
+<!-- /.col -->
+<div class="col-md-12">
+    <!-- Widget: user widget style 1 -->
+    <div class="card card-widget widget-user">
+        <!-- Add the bg color to the header using any of the bg-* classes -->
+        <div class="widget-user-header bg-info">
+            <h3 class="widget-user-username">@Model.FirstName @Model.LastName</h3>
+        </div>
+        <div class="widget-user-image">
+            <img class="img-circle elevation-2" src="@Model.ProfilePicture" alt="User Avatar">
+        </div>
+        <div class="card-footer">
+
+
+                    
+
+            <div class="row">
+                <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                        <span class="description-text">Phone</span>
+                        <h5 class="description-header">@Model.PhoneNumber</h5>
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 border-right">
+                    <div class="description-block">
+                        <span class="description-text"></span>
+                        <h5 class="description-header"></h5>
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4">
+                    <div class="description-block">
+                        <span class="description-text">Address</span>
+                        <h5 class="description-header">@Model.Address</h5>
+                    </div>
+                    <!-- /.description-block -->
+                </div>
+                <!-- /.col -->
+            </div>
+            <hr />
+
+            <section class="content">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                        <h3 class="card-title">Administrators' Decision Table</h3>
+                                            </div>
+                                            <!-- ./card-header -->
+                                            <div class="card-body">
+                                                <table class="table table-bordered table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>#</th>
+                                                            <th class="text-center">Date</th>
+                                                            <th class="text-center">By</th>
+                                                            <th class="text-center">Status</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr data-widget="expandable-table" aria-expanded="false">
+                                                            <td class="text-center">Create</td>
+                                                            @{
+                                                                if (Model.Stander.CreatedAt != null)
+                                                                {
+                                                                    <td class="text-center">@Model.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@Model.Stander.CreatedAt</td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">@Model.Stander.CreatedBy</td>
+                                                            <td class="text-center">---------------------------</td>
+                                                        </tr>
+                                                        <tr data-widget="expandable-table" aria-expanded="false">
+                                                            <td class="text-center">Update</td>
+                                                            @{
+                                                                if (Model.Stander.ModifiedAt != null)
+                                                                {
+                                                                    <td class="text-center">@Model.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@Model.Stander.ModifiedAt</td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">@Model.Stander.ModifiedBy</td>
+                                                            <td class="text-center">---------------------------</td>
+                                                        </tr>
+                                                        <tr data-widget="expandable-table" aria-expanded="false">
+                                                            <td class="text-center">Delete</td>
+                                                            @{
+                                                                if (Model.Stander.DeletedAt != null)
+                                                                {
+                                                                    <td class="text-center">@Model.Stander.DeletedAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@Model.Stander.DeletedAt</td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">@Model.Stander.DeletedBy</td>
+                                                            <td class="text-center">@Model.Stander.IsDelete</td>
+                                                        </tr>
+                                                        <tr data-widget="expandable-table" aria-expanded="false">
+                                                            <td class="text-center">Confirm</td>
+                                                            @{
+                                                                if (Model.Stander.ConfirmAt != null)
+                                                                {
+                                                                    <td class="text-center">@Model.Stander.ConfirmAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@Model.Stander.ConfirmAt</td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">@Model.Stander.ConfirmBy</td>
+                                                            <td class="text-center">@Model.Stander.IsConfirm</td>
+                                                        </tr>
+                                                        <tr data-widget="expandable-table" aria-expanded="false">
+                                                            <td class="text-center">Block</td>
+                                                            @{
+                                                                if (Model.Stander.BlockedAt != null)
+                                                                {
+                                                                    <td class="text-center">@Model.Stander.BlockedAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@Model.Stander.BlockedAt</td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">@Model.Stander.BlockedBy</td>
+                                                            <td class="text-center">@Model.Stander.IsActive</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <!-- /.card-body -->
+                                        </div>
+                                        <!-- /.card -->
+                                    </div>
+                                </div>
+                    </section>
+            <!-- /.row -->
+        </div>
+    </div>
+    <!-- /.widget-user -->
+</div>
+</div>
+</form>

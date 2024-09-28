@@ -1,0 +1,877 @@
+﻿@model Users /* This is For TaxiDriver */
+
+@inject IRequestTripRepository requestTrip;
+@inject IVehicleRepository vehicle;
+@inject IRequestMechanicRepository requestMechanic;
+@inject IRequestPoliceRepository requestPolice;
+@inject IReportRepository report
+@inject IUsersRepository user
+
+@{
+    var GetAllTrip = await requestTrip.GetAllAsync("TaxiDriverRequests", x => x.Status == 0);
+    var GetCountAcceptedTrip = await requestTrip.Count("TaxiDriverRequests", x => x.DriverId == Model.Id);
+    var GetAllAcceptedTrip = await requestTrip.GetAllAsync("TaxiDriverRequests", x => x.DriverId == Model.Id);
+    var GetAllVehicle = await vehicle.GetAllAsync("Vehicle", x => x.DriverId == Model.Id);
+    var GetCountVehicle = await vehicle.Count("Vehicle", x => x.DriverId == Model.Id);
+    var GetAllRequestMechanic = await requestMechanic.GetAllAsync("MechanicRequests", x => x.UserId == Model.Id);
+    var GetCountRequestMechanic = await requestMechanic.Count("MechanicRequests", x => x.UserId == Model.Id);
+    var GetAllRequestPolice = await requestPolice.GetAllAsync("TrafficPoliceRequests", x => x.UserId == Model.Id);
+    var GetCountRequestPolice = await requestPolice.Count("TrafficPoliceRequests", x => x.UserId == Model.Id);
+
+
+    var reportTaxi = await report.GetAllAsync("Reports", x => x.RequestType == "TaxiDriver" && x.UserId == Model.Id);
+    var reportMechanic = await report.GetAllAsync("Reports", x => x.RequestType == "Mechanic" && x.UserId == Model.Id);
+    var reportPolice = await report.GetAllAsync("Reports", x => x.RequestType == "TrafficPolice" && x.UserId == Model.Id);
+
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Profile</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">TaxiDriver Profile</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+        <!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+
+                    <!-- Profile Image -->
+                    <div class="card card-primary card-outline">
+                        <div class="card-body box-profile">
+                            <div class="text-center">
+                                <img class="profile-user-img img-fluid img-circle"
+                                     src="@Model.ProfilePicture"
+                                     alt="User profile picture">
+                            </div>
+                            <h3 class="profile-username text-center">
+                                <label id="inputName">@Model.FirstName @Model.LastName</label>
+                            </h3>
+                           
+
+                            <p class="text-muted text-center">@Model.UserType</p>
+                            <ul class="list-group list-group-unbordered mb-3">
+                                <div class="btn btn-warning">
+                                <li class="list-group-item">
+                                    <b>Accepted Trips</b> @GetCountAcceptedTrip<a class="float-right"></a>
+                                </li>
+                                </div>
+                                <li class="list-group-item">
+                                    <b>Vechicle</b>@GetCountVehicle<a class="float-right"></a>
+                                </li>
+                                <li class="list-group-item">
+                            <a asp-route-id="@Model.Id" asp-action="Add" asp-controller="Vehicle" class="btn btn-primary btn-block"><b>Add Vechicle</b></a>
+                                </li>
+                                
+                                <li class="list-group-item">
+                                    <b>Request AutoMechanic</b> @GetCountRequestMechanic<a class="float-right"></a>
+                                </li>
+                                <li class="list-group-item">
+                                   <a asp-route-id="@Model.Id" asp-action="Add" asp-controller="RequestMechanic" class="btn btn-info btn-block"><b>Request Mechanic</b></a>
+                                </li>
+                                <li class="list-group-item">
+                                    <b>Request Police</b> @GetCountRequestPolice<a class="float-right"></a>
+                                </li>
+                                <li class="list-group-item">
+                                   <a asp-route-id="@Model.Id" asp-action="Add" asp-controller="RequestPolice" class="btn btn-primary btn-block"><b>Request Police</b></a>
+                                </li>
+                            </ul>
+                            
+                            
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
+                <!-- About Me Box -->
+                <div class="card card-primary">
+                    <div class="card-header">
+                        <h3 class="card-title">About Me</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                        <strong><i class="fas fa-book mr-1"></i> Eamil</strong>
+
+                        <p class="text-muted">
+                                @Model.Email
+                        </p>
+
+                        <hr>
+
+                        <strong><i class="fas fa-map-marker-alt mr-1"></i> Phone number</strong>
+
+                        <p class="text-muted">@Model.PhoneNumber</p>
+
+
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                    <!-- /.card -->
+                    <!-- /.card -->
+                </div>
+
+
+               
+
+
+
+
+
+                <!-- /.col -->
+                <div class="col-md-9">
+
+
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Vechicle Table</h3>
+
+                            <div class="card-tools">
+                                <div class="input-group input-group-sm" style="width: 150px;">
+
+                                    <input type="text" name="table_search" class="form-control float-right" placeholder="Search">
+
+                                    <div class="input-group-append">
+                                        <button type="submit" class="btn btn-default">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0" style="height: 400px;">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th class="text-center">Plate Number</th>
+                                        <th class="text-center">Type</th>
+                                        <th class="text-center">Model</th>
+                                        <th class="text-center">Fuel type</th>
+                                        <th class="text-center">Active</th>
+                                        <th class="text-center">Create at</th>
+                                        <th class="text-center">Update at</th>
+                                        <th class="text-center">Confirm</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in GetAllVehicle)
+                                    {
+                                        <tr>
+                                            <td>@item.Id</td>
+                                            <td class="text-center">@item.LicensePlateNumber</td>
+                                            <td class="text-center">@item.CarType</td>
+                                            <td class="text-center">@item.CarModel</td>
+                                            <td class="text-center">@item.FuelType</td>
+                                            <td class="text-center">@item.Stander.IsActive</td>
+                                            @{
+                                                if (item.Stander.CreatedAt != null)
+                                                {
+                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                }
+
+                                                if (item.Stander.ModifiedAt != null)
+                                                {
+                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                }
+                                            
+                                                if (item.Stander.IsConfirm != true)
+                                                {
+
+                                                        <td class="text-center">
+                                                            <a class="text-center btn btn-danger" asp-route-id="@item.Id" asp-action="Details" asp-controller="TaxiDriverVechicle">Details</a>
+                                                        </td>
+
+                                                }
+                                                else
+                                                {
+                                                        <td class="text-center"><a href="#"><span class="badge badge-success">ISCONFIRM</span></a></td>
+                                                }
+                                            }
+                                            <td>
+
+
+                                                <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <a class="dropdown-item" asp-route-id="@item.Id" asp-action="Edit" asp-controller="TaxiDriverVechicle">Edit</a>
+                                                    <a asp-route-id="@item.Id" asp-action="Remove" asp-controller="TaxiDriverVechicle" class="dropdown-item">Delete</a>
+                                                    
+
+                                                    @{
+                                                        var status = "DisActive";
+                                                        if (@item.Stander.IsActive == false)
+                                                        {
+                                                            status = "Active";
+                                                        }
+                                                    }
+                                                    <a asp-route-id="@item.Id" asp-action="@status" asp-controller="TaxiDriverVechicle" class="dropdown-item">@status</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+
+
+                    <div class="card card-info">
+                        <div class="card-header p-2">
+                            <ul class="nav nav-pills">
+                                <li class="nav-item"><a class="active nav-link" href="#timeline" data-toggle="tab">AutoMechanic Requests</a></li>
+                                <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Police Requests</a></li>
+                            </ul>
+                        </div><!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content">
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                <div class="active tab-pane" id="timeline">
+                                    <!-- Post -->
+                                    <div class="post">
+                                        <div class="user-block">
+                                            <!-- /.card-header -->
+                                            <div class="card-body table-responsive p-0" style="height: 400px;">
+                                                <table class="table table-head-fixed text-nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center">ID</th>
+                                                            <th class="text-center">Current Location</th>
+                                                            <th class="text-center">Details</th>
+                                                            <th class="text-center">Status</th>
+                                                            <th class="text-center">IsActive</th>
+                                                            <th class="text-center">Create at</th>
+                                                            <th class="text-center">Update at</th>
+                                                            <th class="text-center">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        
+                                                        @foreach (var item in (GetAllRequestMechanic))
+                                                        {
+                                                            <tr>
+                                                                <td class="text-center">@item.Id</td>
+                                                                <td class="text-center">@item.CurrentLocation.Latitude , @item.CurrentLocation.Longitude</td>
+                                                                <td class="text-center">@item.Details</td>
+                                                                <td class="text-center">@item.Status</td>
+                                                                <td class="text-center">@item.Stander.IsActive</td>
+                                                                @{
+                                                                    if (item.Stander.CreatedAt != null)
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                                    }
+
+                                                                    if (item.Stander.ModifiedAt != null)
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                                    }
+                                                                }
+                                                                <td>
+                                                                    <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                                    </a>
+                                                                    <div class="dropdown-menu dropdown-menu-end">
+                                                                    @{
+                                                                    if(item.Status!=0)
+                                                                    {
+                                                                     <a class="btn btn-success" asp-all-route-data="@(new Dictionary<string, string>{ { "id" , @item.Id } ,{ "Uid" , Model.Id } })" asp-action="Add" asp-controller="Report">Report</a>
+                                                                    }
+                                                                    }
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                        <!-- /.post -->
+                                        <!-- /.col -->
+                                    </div>
+                                    <!-- /.row -->
+                                </div>
+
+
+
+                                <div class="tab-pane fade" id="settings">
+                                    <!-- Post -->
+                                    <div class="post">
+                                        <div class="user-block">
+                                            <!-- /.card-header -->
+                                            <div class="card-body table-responsive p-0" style="height: 400px;">
+                                                <table class="table table-head-fixed text-nowrap">
+                                                    <thead>
+                                                        <tr>
+                                                            <th class="text-center">ID</th>
+                                                            <th class="text-center">Current Location</th>
+                                                            <th class="text-center">Details</th>
+                                                            <th class="text-center">Status</th>
+                                                            <th class="text-center">IsActive</th>
+                                                            <th class="text-center">Create at</th>
+                                                            <th class="text-center">Update at</th>
+                                                            <th class="text-center">Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var item in GetAllRequestPolice)
+                                                        {
+                                                            <tr>
+                                                                <td class="text-center">@item.Id</td>
+                                                                <td class="text-center">@item.CurrentLocation.Latitude , @item.CurrentLocation.Longitude</td>
+                                                                <td class="text-center">@item.Details</td>
+                                                                <td class="text-center">@item.Status</td>
+                                                                <td class="text-center">@item.Stander.IsActive</td>
+                                                                @{
+                                                                    if (item.Stander.CreatedAt != null)
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                                    }
+
+                                                                    if (item.Stander.ModifiedAt != null)
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                                    }
+                                                                }
+                                                                <td class="text-center">
+                                                                    <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                                                        <i class="bi bi-three-dots-vertical"></i>
+                                                                    </a>
+                                                                    <div class="dropdown-menu dropdown-menu-end"> 
+                                                                    @{
+                                                                    if(item.Status!=0)
+                                                                    {
+                                                                     <a class="btn btn-success" asp-all-route-data="@(new Dictionary<string, string>{ { "id" , @item.Id } ,{ "Uid" , Model.Id } })" asp-action="Add" asp-controller="Report">Report</a>
+                                                                    }
+                                                                    }
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+                                        <!-- /.post -->
+                                        <!-- /.col -->
+                                    </div>
+                                    <!-- /.row -->
+                                </div>
+
+
+
+
+
+                                <!-- /.container-fluid -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card card-warning">
+                    <div class="card-header border-0">
+
+                        <h3 class="card-title">New Trips</h3>
+                        <!-- tools card -->
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-success btn-sm" data-card-widget="collapse">
+                                <i class="fas fa-minus"></i>
+                            </button>
+
+                        </div>
+                        <!-- /. tools -->
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body pt-0">
+                        <div class="card-body table-responsive p-0" style="height: 400px;">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
+                                    <tr>
+                                    <th class="text-center">ID</th>
+                                    <th class="text-center">User</th>
+                                    <th class="text-center">Current Location</th>
+                                    <th class="text-center">Target Location</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">IsActive</th>
+                                    <th class="text-center">Create at</th>
+                                    <th class="text-center">Update at</th>
+                                    <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    
+                                    @foreach (var item in (GetAllTrip))
+                                    {
+                                        <tr>
+                                        <td class="text-center">@item.Id</td> 
+                                        @{
+                                                    var User = await user.GetById("Users", item.UserId);
+                                                    if (User != null)
+                                                    {
+                                                    <td class="text-center">@User.FirstName @User.LastName</td>
+                                                    }
+                                                    else
+                                                    {
+                                                    <td class="text-center">@item.UserId</td>
+                                                    }
+                                            }
+                                        <td class="text-center">@item.CurrentLocation.Latitude , @item.CurrentLocation.Longitude</td>
+                                        <td class="text-center">@item.TargetLocation.Latitude , @item.TargetLocation.Longitude</td>
+                                        <td class="text-center">@item.Status</td>
+                                        <td class="text-center">@item.Stander.IsActive</td>
+                                        @{
+                                                if (item.Stander.CreatedAt != null)
+                                                {
+                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                }
+
+                                                if (item.Stander.ModifiedAt != null)
+                                                {
+                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                }
+                                            }
+                                            <td class="text-center">
+                                            <a class="btn btn-success" asp-all-route-data="@(new Dictionary<string, string>{ { "id" , @item.Id } ,{ "driverid" , Model.Id } })" asp-action="Accept" asp-controller="RequestTrip">Start</a>
+
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+
+
+                
+
+                <div class="card card-success">
+                        <div class="card-header border-0">
+
+                            <h3 class="card-title">
+                                @*
+                                <i class="far fa-calendar-alt"></i>*@
+                                Accepted Trips
+                            </h3>
+                            <!-- tools card -->
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-success btn-sm" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                               
+                            </div>
+                            <!-- /. tools -->
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body pt-0">
+                           <div class="card-body table-responsive p-0" style="height: 400px;">
+                        <table class="table table-head-fixed text-nowrap">
+                        <thead>
+                          <tr>
+                            <th class="text-center">ID</th>
+                            <th class="text-center">User</th>
+                            <th class="text-center">Current Location</th>
+                            <th class="text-center">Target Location</th>
+                            <th class="text-center">Status</th>
+                            <th class="text-center">Active</th>
+                            <th class="text-center">Create At</th>
+                            <th class="text-center">Modified At</th>
+                            <th class="text-center">Accept</th>
+                          </tr>
+                        </thead>
+                            <tbody>
+                                    @foreach (var item in (GetAllAcceptedTrip))
+                                    {
+                                    <tr>
+                                        <td class="text-center">@item.Id</td>
+                                         @{
+                                                    var User = await user.GetById("Users", item.UserId);
+                                                    if (User != null)
+                                                    {
+                                                    <td class="text-center">@User.FirstName @User.LastName</td>
+                                                    }
+                                                    else
+                                                    {
+                                                    <td class="text-center">@item.UserId</td>
+                                                    }
+                                            }
+                                        <td class="text-center">@item.CurrentLocation.Latitude , @item.CurrentLocation.Longitude</td>
+                                        <td class="text-center">@item.TargetLocation.Latitude , @item.TargetLocation.Longitude</td>
+                                        <td class="text-center">@item.Status</td>
+                                        <td class="text-center">@item.Stander.IsActive</td>
+                                        @{
+                                                if (item.Stander.CreatedAt != null)
+                                                {
+                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                }
+
+                                                if (item.Stander.ModifiedAt != null)
+                                                {
+                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                }
+                                            }
+                                        <td class="text-center">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-success btn-sm dropdown-toggle" data-toggle="dropdown" data-offset="-52">
+                                                    <i class="fas fa-bars"></i>
+                                                </button>
+                                                <div class="dropdown-menu" role="menu">
+
+                                                    <a class="btn btn-success" asp-all-route-data="@(new Dictionary<string, string>{ { "id" , @item.Id } ,{ "Uid" , Model.Id } })" asp-action="Add" asp-controller="Report">Report</a>
+
+                                                </div>
+                                            </div>
+
+
+                                        </td>
+                                    </tr>
+                                    }
+                            </tbody>
+                        </table>
+                           </div>
+
+                        </div>
+                        <!-- /.card-body -->
+                </div>
+
+
+
+
+
+                <!-- Reports Tables -->
+                <!-- /.col -->
+            <div class="col-md-12">
+                <div class="card card-danger">
+                    <div class="card-header p-2">
+                        <ul class="nav nav-pills">
+                            <li class="nav-item"><a class="nav-link active" href="#retrip" data-toggle="tab">Trips Reports</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#reauto" data-toggle="tab">AutoMechanic Reports</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#repolice" data-toggle="tab">TrafficPolice Reports</a></li>
+                        </ul>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="tab-content">
+
+
+
+
+                            <div class="active tab-pane" id="retrip">
+                                <!-- Post -->
+                                <div class="post">
+                                    <div class="user-block">
+                                        <!-- /.card-header -->
+
+                                        <div class="card-body table-responsive p-0" style="height: 400px;">
+                                            <table class="table table-head-fixed text-nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">ID</th>
+                                                        <th class="text-center">Request Id</th>
+                                                        <th class="text-center">Details</th>
+                                                        <th class="text-center">Active</th>
+                                                        <th class="text-center">Status</th>
+                                                        <th class="text-center">Create at</th>
+                                                        <th class="text-center">Update at</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                        @foreach (var item in reportTaxi)
+                                                        {
+                                                        <tr>
+                                                            <td class="text-center">@item.Id</td>
+                                                            <td class="text-center">@item.RequestId</td>
+                                                            <td class="text-center">@item.Details</td>
+                                                            <td class="text-center">@item.Stander.IsActive</td>
+                                                                @{
+                                                                    if (item.Status == 0)
+                                                                    {
+                                                                    <td class="text-center"><span class="badge badge-warning">Waiting</span></td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center"><span class="badge badge-success">Read</span></td>
+                                                                    }
+                                                                    if (item.Stander.CreatedAt != null)
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                                    }
+
+                                                                    if (item.Stander.ModifiedAt != null)
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                                    }
+                                                                }
+                                                            <td>
+                                                                <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.post -->
+                                    <!-- /.col -->
+                                </div>
+                                <!-- /.row -->
+                            </div>
+
+
+
+
+
+                            <div class="tab-pane fade" id="reauto">
+                                <!-- Post -->
+                                <div class="post">
+                                    <div class="user-block">
+                                        <!-- /.card-header -->
+                                        <div class="card-body table-responsive p-0" style="height: 400px;">
+                                            <table class="table table-head-fixed text-nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">ID</th>
+                                                        <th class="text-center">Request Id</th>
+                                                        <th class="text-center">Details</th>
+                                                        <th class="text-center">Active</th>
+                                                        <th class="text-center">Status</th>
+                                                        <th class="text-center">Create at</th>
+                                                        <th class="text-center">Update at</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                        @foreach (var item in reportMechanic)
+                                                        {
+                                                        <tr>
+                                                            <td class="text-center">@item.Id</td>
+                                                            <td class="text-center">@item.RequestId</td>
+                                                            <td class="text-center">@item.Details</td>
+                                                            <td class="text-center">@item.Stander.IsActive</td>
+                                                                @{
+                                                                    if (item.Status == 0)
+                                                                    {
+                                                                    <td class="text-center"><span class="badge badge-warning">Waiting</span></td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center"><span class="badge badge-success">Read</span></td>
+                                                                    }
+                                                                    if (item.Stander.CreatedAt != null)
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                                    }
+
+                                                                    if (item.Stander.ModifiedAt != null)
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                                    }
+                                                                }
+                                                            <td>
+                                                                <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                                </a>
+                                                            </td>
+                                                        </tr>
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.post -->
+                                    <!-- /.col -->
+                                </div>
+                                <!-- /.row -->
+                            </div>
+
+
+
+                            <div class="tab-pane fade" id="repolice">
+                                <!-- Post -->
+                                <div class="post">
+                                    <div class="user-block">
+                                        <!-- /.card-header -->
+                                        <div class="card-body table-responsive p-0" style="height: 400px;">
+                                            <table class="table table-head-fixed text-nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">ID</th>
+                                                        <th class="text-center">Request Id</th>
+                                                        <th class="text-center">Details</th>
+                                                        <th class="text-center">Active</th>
+                                                        <th class="text-center">Status</th>
+                                                        <th class="text-center">Create at</th>
+                                                        <th class="text-center">Update at</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                        @foreach (var item in reportPolice)
+                                                        {
+                                                        <tr>
+                                                            <td class="text-center">@item.Id</td>
+                                                            <td class="text-center">@item.RequestId</td>
+                                                            <td class="text-center">@item.Details</td>
+                                                            <td class="text-center">@item.Stander.IsActive</td>
+                                                                @{
+                                                                    if (item.Status == 0)
+                                                                    {
+                                                                    <td class="text-center"><span class="badge badge-warning">Waiting</span></td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center"><span class="badge badge-success">Read</span></td>
+                                                                    }
+                                                                    if (item.Stander.CreatedAt != null)
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                                    }
+
+                                                                    if (item.Stander.ModifiedAt != null)
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                                    }
+                                                                }
+                                                            <td>
+                                                                <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                                </a>
+
+                                                            </td>
+                                                        </tr>
+                                                        }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.post -->
+                                    <!-- /.col -->
+                                </div>
+                                <!-- /.row -->
+                            </div>
+
+
+
+
+
+
+
+                            <!-- /.container-fluid -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+
+            </div>
+
+
+    </section>
+    <!-- /.content -->
+
+
+</div>
+<!-- /.content-wrapper -->

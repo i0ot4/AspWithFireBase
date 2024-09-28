@@ -1,0 +1,65 @@
+﻿@model Slides
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+<form class="row" asp-action="Add" enctype="multipart/form-data">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Create New Slide image</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Application Slides</a></li>
+                            <li class="breadcrumb-item active">New Slide</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <input type="datetime" asp-for="Stander.CreatedAt" hidden />
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">General</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                       
+                        <div class="card-body">
+
+                            <div class="form-group">
+                                <label asp-for="ImageUrl"></label>
+                                <input type="file" name="formFile" class="form-control" asp-for="ImageUrl">
+                                <span class="text-danger" asp-validation-for="ImageUrl"></span>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+
+               
+                <!-- /.card -->
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="#" class="btn btn-secondary">Cancel</a>
+                    <input type="submit" value="Create" class="btn btn-success float-right">
+                </div>
+            </div>
+        </section>
+        <!-- /.content -->
+    </form>
+</div>
+<!-- /.content-wrapper -->

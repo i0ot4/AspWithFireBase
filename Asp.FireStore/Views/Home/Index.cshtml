@@ -1,0 +1,51 @@
+﻿
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">DataTable with minimal features & hover style</h3>
+            </div>
+            <div class="card-body">
+                <table id="example2" class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>الاسم</th>
+                            <th>العمر</th>
+                            <th>المدينة</th>
+                            <th>الوظيفة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>محمد</td>
+                            <td>30</td>
+                            <td>الرياض</td>
+                            <td>مهندس</td>
+                        </tr>
+                        <tr>
+                            <td>علي</td>
+                            <td>25</td>
+                            <td>جدة</td>
+                            <td>طبيب</td>
+                        </tr>
+                        <tr>
+                            <td>سارة</td>
+                            <td>35</td>
+                            <td>الدمام</td>
+                            <td>محاسب</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $('#example2').DataTable();
+        });
+    </script>

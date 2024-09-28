@@ -1,0 +1,155 @@
+﻿@model List<Employee>
+@inject IUsersRepository user
+
+<div class="wrapper">
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>DataTables</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">Home</a></li>
+                            <li class="breadcrumb-item active">DataTables</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <button class="btn btn-primary float-right" id="printBtn">طباعة</button>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="container-fluid">
+                <div class="row">
+
+
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header">
+                                @{
+                                    var date = DateTime.Now.ToShortDateString();
+                                    var time = DateTime.Now.ToShortTimeString();
+
+                                    var userFirstName = User.FindFirst("UserFirstName")?.Value;
+                                    var userLastName = User.FindFirst("UserLastName")?.Value;
+                                    var AdminId = User.FindFirst("UserId")?.Value;
+                                    var userType = User.FindFirst("UserType")?.Value;
+                                }
+                                <div class="float-right">
+                                    <h3 class="card-title">User Type: @userType</h3>
+                                    <br />
+                                    <h3 class="card-title">User : @userFirstName @userLastName</h3>
+                                    <br />
+                                    <h3 class="card-title">User Id : @AdminId</h3>
+                                </div>
+
+                                <div>
+                                    <h3 class="card-title">Maylzam Application</h3>
+                                    <br />
+                                    <h3 class="card-title">CenterMechanic Employee Info</h3>
+                                    <br />
+                                    <h3 class="card-title">Date: @date</h3>
+                                    <br />
+                                    <h3 class="card-title">Time: @time</h3>
+                                </div>
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <table id="example1" class="table table-bordered table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center">Name</th>
+                                            <th class="text-center">Center</th>
+                                            <th class="text-center">Age</th>
+                                            <th class="text-center">City</th>
+                                            <th class="text-center">Delete</th>
+                                            <th class="text-center">Active</th>
+                                            <th class="text-center">Created at</th>
+                                            <th class="text-center">Update at</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.ToList())
+                                        {
+                                            <tr>
+                                                <td class="text-center">@item.Name</td>
+                                                @{
+                                                    var res = await user.GetById("Users", item.MechanicId);
+                                                }
+                                                <td class="text-center">@res.CenterName</td>
+                                                <td class="text-center">@item.Age</td>
+                                                <td class="text-center">@item.City</td>
+                                                @{
+                                                    if (@item.Stander.IsDelete == true)
+                                                    {
+                                                        <td class="text-center"><span class="badge badge-danger">ON</span></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td class="text-center"><span class="badge badge-success">OFF</span></td>
+                                                    }
+                                                }
+                                                <td class="text-center">@item.Stander.IsActive</td>
+                                                @{
+                                                    if (item.Stander.CreatedAt != null)
+                                                    {
+                                                        <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td class="text-center">@item.Stander.CreatedAt</td>
+                                                    }
+
+                                                    if (item.Stander.ModifiedAt != null)
+                                                    {
+                                                        <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                    }
+                                                }
+                                            </tr>
+                                        }
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <th class="text-center">Name</th>
+                                            <th class="text-center">Center</th>
+                                            <th class="text-center">Age</th>
+                                            <th class="text-center">City</th>
+                                            <th class="text-center">Delete</th>
+                                            <th class="text-center">Active</th>
+                                            <th class="text-center">Created at</th>
+                                            <th class="text-center">Update at</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                        <!-- /.card -->
+                    </div>
+
+
+                    <!-- /.col -->
+                </div>
+                <!-- /.row -->
+            </div>
+            <!-- /.container-fluid -->
+        </section>
+        <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+</div>
+<!-- ./wrapper -->

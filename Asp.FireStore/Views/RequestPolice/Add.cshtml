@@ -1,0 +1,127 @@
+﻿@model RequestPolice
+
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+<form class="row" asp-action="Add" enctype="multipart/form-data">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Create New Police Request</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">TrafficPolice Request</a></li>
+                            <li class="breadcrumb-item active">New Request</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">General</h3>
+                            
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="datetime" asp-for="Stander.CreatedAt" hidden />
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label for="inputName" asp-for="CurrentLocation"></label>
+                                <input id="currentLocation" name="currentLocation" class="form-control" asp-for="CurrentLocation" readonly>
+                                <span class="text-danger" asp-validation-for="CurrentLocation"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputName" asp-for="Details"></label>
+                                <input type="text" id="inputDescription" class="form-control" asp-for="Details">
+                                <span class="text-danger" asp-validation-for="Details"></span>
+                            </div>
+                            
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <h3 class="card-title">budget</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card-body" id="map"></div>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="#" class="btn btn-secondary">Cancel</a>
+                    <input type="submit" value="Create" class="btn btn-success float-right">
+                </div>
+            </div>
+        </section>
+        <!-- /.content -->
+    </form>
+</div>
+<!-- /.content-wrapper -->
+
+<script>
+
+    var map;
+    var markers = [];
+    var directionsRenderer;
+
+    function initMap() {
+        directionsRenderer = new google.maps.DirectionsRenderer();
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 15.335416, lng: 44.181946 },
+            zoom: 16
+        });
+
+        directionsRenderer.setMap(map);
+
+        // Add a click event handler to the map.
+        google.maps.event.addListener(map, 'click', function (event) {
+            // Limit the number of markers on the map to two (for current and target locations).
+            if (markers.length >= 1) {
+                return;
+            }
+
+
+
+            // Add a new marker to the map at the clicked location.
+            var marker = new google.maps.Marker({
+                position: event.latLng,
+                map: map
+            });
+
+            markers.push(marker);
+
+            // Update the form inputs for current and target locations.
+            if (markers.length == 1) {
+                document.getElementById('currentLocation').value = event.latLng.lat() + ', ' + event.latLng.lng();
+            }
+        });
+    }
+
+</script>

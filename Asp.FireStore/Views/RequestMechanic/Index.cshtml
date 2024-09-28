@@ -1,0 +1,229 @@
+﻿@model List<RequestMechanic>
+@inject IUsersRepository user
+@inject IRequestTripRepository trip
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Mechanic Requests</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a>Home</a>
+                        </li>
+                        <li class="breadcrumb-item active">Mechanic Requests</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-add bg-success">
+                        <div class="inner">
+                            @{
+                                var count1 = await trip.Count("MechanicRequests", x => x.Status == 2);
+                            }
+                            <h3>@count1</h3>
+
+                            <p>Compeleted Requests</p>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-primary">
+                        <div class="inner">
+                            @{
+                                var count2 = await trip.Count("MechanicRequests", x => x.Status == 1);
+                            }
+                            <h3>@count2</h3>
+
+                            <p>Accpted Requests</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            @{
+                                var count3 = await trip.Count("MechanicRequests", x => x.Status == 0);
+                            }
+                            <h3>@count3</h3>
+
+                            <p>Waiting Requests</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            @{
+                                var count4 = await trip.Count("MechanicRequests", x => x.Status == 3);
+                            }
+                            <h3>@count4</h3>
+
+                            <p>Faild Requests</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+            <!-- /.row -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Requests Table</h3>
+                            <div class="card-tools">
+                                <div class="icon">
+                                    <a asp-action="Print" asp-controller="RequestMechanic" class="btn btn-primary"><img class="nav-icon" style="height: 30px;width:30px" src="~/icons/printer.png" /></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0" style="height: 400px;">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th class="text-center">Mechanic</th>
+                                        <th class="text-center">User</th>
+                                        <th class="text-center">Status</th>
+                                        <th class="text-center">Details</th>
+                                        <th class="text-center">Active</th>
+                                        <th class="text-center">Create at</th>
+                                        <th class="text-center">Update at</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.ToList())
+                                    {
+                                        <tr>
+                                            <td>@item.Id</td>
+                                            @{
+                                                if (item.MechanicId != null)
+                                                {
+                                                    var Driver = await user.GetById("Users", item.MechanicId);
+                                                    <td class="text-center">@Driver.FirstName @Driver.LastName</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center"> </td>
+                                                }
+                                            }
+
+                                            @{
+                                                if (item.UserId != null)
+                                                {
+                                                    var User = await user.GetById("Users", item.UserId);
+
+                                                    <td class="text-center">@User.FirstName @User.LastName</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center"> </td>
+                                                }
+                                                if (item.Reported !=true)
+                                                {
+
+                                                    if (item.Status == 0)
+                                                    {
+                                                        <td class="text-center"><span class="badge badge-warning">Waiting</span></td>
+                                                    }
+                                                    else if (item.Status == 1)
+                                                    {
+                                                        <td class="text-center"><span class="badge badge-primary">Accpted</span></td>
+                                                    }
+                                                    else if (item.Status == 2)
+                                                    {
+                                                        <td class="text-center"><span class="badge badge-info">Fixing</span></td>
+                                                    }
+                                                    else if (item.Status == 3)
+                                                    {
+                                                        <td class="text-center"><span class="badge badge-success">Compeleted</span></td>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center"><span class="badge badge-danger">Fail</span></td>
+                                                }
+                                            }
+                                            <td class="text-center">@item.Details</td>
+                                            <td class="text-center">@item.Stander.IsActive</td>
+                                            @{
+                                                if (item.Stander.CreatedAt != null)
+                                                {
+                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                }
+
+                                                if (item.Stander.ModifiedAt != null)
+                                                {
+                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                }
+                                            }
+                                            <td>
+
+
+                                                <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <a class="dropdown-item" asp-route-id="@item.Id" asp-action="Remove" asp-controller="RequestMechanic">Delete</a>
+                                                    <a class="dropdown-item" asp-route-id="@item.Id" asp-action="Details" asp-controller="RequestMechanic">Details</a>
+                                                    @{
+                                                        var status = "DisActive";
+                                                        if (@item.Stander.IsActive == false)
+                                                        {
+                                                            status = "Active";
+                                                        }
+                                                    }
+                                                    <a asp-route-id="@item.Id" asp-action="@status" asp-controller="RequestMechanic" class="dropdown-item">@status</a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+
+
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

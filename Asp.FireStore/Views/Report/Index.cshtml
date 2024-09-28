@@ -1,0 +1,528 @@
+﻿@model List<Reports>
+@inject IReportRepository report
+@inject IUsersRepository user
+@inject IRequestTripRepository trip
+@inject IRequestMechanicRepository mechanic
+@inject IRequestTripRepository police
+
+@{
+
+    var all = await report.GetAllAsync("Reports");
+    var reportTaxi = await report.GetAllAsync("Reports", x => x.RequestType == "TaxiDriver");
+    var reportMechanic = await report.GetAllAsync("Reports", x => x.RequestType == "Mechanic");
+    var reportPolice = await report.GetAllAsync("Reports", x => x.RequestType == "TrafficPolice");
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper bg-danger">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Users Reports</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a>Reports</a>
+                        </li>
+                        <li class="breadcrumb-item active">Users Reports</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-add bg-success">
+                        <div class="inner">
+                            @{
+                                var count1 = await report.Count("Reports");
+                            }
+                            <h3>@count1</h3>
+
+                            <p>All Reports</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+                            @{
+                                var date = DateTime.UtcNow.Date;
+                                var count2 = await report.Count("Reports", x => x.RequestType == "TaxiDriver");
+                            }
+                            <h3>@count2</h3>
+
+                            <p>TaxiDriver Reports</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            @{
+                                var count3 = await report.Count("Reports", x => x.RequestType == "Mechanic");
+                            }
+                            <h3>@count3</h3>
+
+                            <p>Mechanic Reports</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-primary">
+                        <div class="inner">
+                            @{
+                                var count4 = await report.Count("Reports", x => x.RequestType == "TrafficPolice");
+                            }
+                            <h3>@count4</h3>
+
+                            <p>TrafficPolice Reports</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- ./col -->
+            </div>
+            <!-- /.row -->
+            <!-- Reports Tables -->
+            <!-- /.col -->
+            <div class="row">
+            <div class="col-md-12">
+                <div class="card ">
+                    <div class="card-header p-2">
+                        <h3 class="card-title">TaxiDriver Table</h3>
+
+                        <button type="button" class="btn btn-success btn-sm dropdown-toggle float-right" data-toggle="dropdown" data-offset="-52">
+                                <i class="fas fa-bars"></i>
+                            </button>
+                            <div class="dropdown-menu" role="menu">
+
+                                <ul class="nav nav-pills ">
+
+                                    <li class="nav-item dropdown-item"><a class="nav-link active" href="#reAll" data-toggle="tab">All Reports</a></li>
+                                    <li class="nav-item dropdown-item"><a class="nav-link" href="#retrip" data-toggle="tab">Trips Reports</a></li>
+                                    <li class="nav-item dropdown-item"><a class="nav-link" href="#remechanic" data-toggle="tab">Mechanic Reports</a></li>
+                                    <li class="nav-item dropdown-item"><a class="nav-link" href="#repolice" data-toggle="tab">Police Reports</a></li>
+
+                                </ul>
+
+                            </div>
+                    </div><!-- /.card-header -->
+                    <div class="card-body">
+                        <div class="tab-content">
+
+
+
+
+                            <div class="active tab-pane" id="reAll">
+                                <!-- Post -->
+                                <div class="post">
+                                    <div class="user-block">
+                                        <!-- /.card-header -->
+                                        <div class="card-body table-responsive p-0" style="height: 400px;">
+                                            <table class="table table-head-fixed text-nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">ID</th>
+                                                        <th class="text-center">Request Id</th>
+                                                        <th class="text-center">User</th>
+                                                        <th class="text-center">Status</th>
+                                                        <th class="text-center">Request Type</th>
+                                                        <th class="text-center">Details</th>
+                                                        <th class="text-center">Active</th>
+                                                        <th class="text-center">Create at</th>
+                                                        <th class="text-center">Update at</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in all)
+                                                    {
+                                                        <tr>
+                                                                <td class="text-center">@item.Id</td>
+                                                                <td class="text-center">@item.RequestId</td>
+                                                            @{
+                                                                if(item.UserId != null)
+                                                                {
+                                                                    var name = await user.GetById("Users", item.UserId);
+                                                                    if(name == null)
+                                                                    {
+                                                                        <td class="text-center">The User NotFound</td>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                    <td class="text-center">@name.FirstName @name.LastName</td>
+                                                                    }
+                                                                }
+                                                                if (item.Status == 0)
+                                                                {
+                                                                    <td class="text-center"><span class="badge badge-warning">Waiting</span></td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center"><span class="badge badge-success">Read</span></td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">@item.RequestType</td>
+                                                            <td class="text-center">@item.Details</td>
+                                                            <td class="text-center">@item.Stander.IsActive</td>
+                                                            @{
+                                                                
+                                                                if (item.Stander.CreatedAt != null)
+                                                                {
+                                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                                }
+
+                                                                if (item.Stander.ModifiedAt != null)
+                                                                {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">
+                                                                <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-end">
+                                                                    <a asp-route-id="@item.Id" asp-action="Details" asp-controller="Report" class="dropdown-item">Details</a>
+                                                                    @{
+                                                                        if (@item.Status == 0)
+                                                                        {
+                                                                             <a asp-route-id="@item.Id" asp-action="Read" asp-controller="Report" class="dropdown-item">Read</a>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.post -->
+                                    <!-- /.col -->
+                                </div>
+                                <!-- /.row -->
+                            </div>
+
+
+
+
+
+                            <div class="tab-pane fade" id="retrip">
+                                <!-- Post -->
+                                <div class="post">
+                                    <div class="user-block">
+                                        <!-- /.card-header -->
+                                        <div class="card-body table-responsive p-0" style="height: 400px;">
+                                            <table class="table table-head-fixed text-nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">ID</th>
+                                                        <th class="text-center">Request Id</th>
+                                                        <th class="text-center">User</th>
+                                                        <th class="text-center">Status</th>
+                                                        <th class="text-center">Request Type</th>
+                                                        <th class="text-center">Details</th>
+                                                        <th class="text-center">Active</th>
+                                                        <th class="text-center">Create at</th>
+                                                        <th class="text-center">Update at</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in reportTaxi)
+                                                    {
+                                                        <tr>
+                                                            <td class="text-center">@item.Id</td>
+                                                            <td class="text-center">@item.RequestId</td>
+                                                            @{
+                                                                if(item.UserId != null)
+                                                                {
+                                                                    var name = await user.GetById("Users", item.UserId);
+
+                                                                    <td class="text-center">@name.FirstName @name.LastName</td>
+                                                                }
+                                                                if (item.Status == 0)
+                                                                {
+                                                                    <td class="text-center"><span class="badge badge-warning">Waiting</span></td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center"><span class="badge badge-success">Read</span></td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">@item.RequestType</td>
+                                                            <td class="text-center">@item.Details</td>
+                                                            <td class="text-center">@item.Stander.IsActive</td>
+                                                            @{
+                                                                if (item.Stander.CreatedAt != null)
+                                                                {
+                                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                                }
+
+                                                                if (item.Stander.ModifiedAt != null)
+                                                                {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">
+                                                                <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-end">
+                                                                     @{
+                                                                        if (@item.Status == 0)
+                                                                        {
+                                                                             <a asp-route-id="@item.Id" asp-action="Read" asp-controller="Report" class="dropdown-item">Read</a>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.post -->
+                                    <!-- /.col -->
+                                </div>
+                                <!-- /.row -->
+                            </div>
+
+
+                            <div class="tab-pane fade" id="remechanic">
+                                <!-- Post -->
+                                <div class="post">
+                                    <div class="user-block">
+                                        <!-- /.card-header -->
+                                        <div class="card-body table-responsive p-0" style="height: 400px;">
+                                            <table class="table table-head-fixed text-nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">ID</th>
+                                                        <th class="text-center">Request Id</th>
+                                                        <th class="text-center">User</th>
+                                                        <th class="text-center">Status</th>
+                                                        <th class="text-center">Request Type</th>
+                                                        <th class="text-center">Details</th>
+                                                        <th class="text-center">Active</th>
+                                                        <th class="text-center">Create at</th>
+                                                        <th class="text-center">Update at</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in reportMechanic)
+                                                    {
+                                                        <tr>
+                                                            <td class="text-center">@item.Id</td>
+                                                            <td class="text-center">@item.RequestId</td>
+                                                            @{
+                                                                if(item.UserId != null)
+                                                                {
+                                                                    var name = await user.GetById("Users", item.UserId);
+
+                                                                    <td class="text-center">@name.FirstName @name.LastName</td>
+                                                                }
+                                                                if (item.Status == 0)
+                                                                {
+                                                                    <td class="text-center"><span class="badge badge-warning">Waiting</span></td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center"><span class="badge badge-success">Read</span></td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">@item.RequestType</td>
+                                                            <td class="text-center">@item.Details</td>
+                                                            <td class="text-center">@item.Stander.IsActive</td>
+                                                            @{
+                                                                if (item.Stander.CreatedAt != null)
+                                                                {
+                                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                                }
+
+                                                                if (item.Stander.ModifiedAt != null)
+                                                                {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">
+                                                                <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-end">
+                                                                     @{
+                                                                        if (@item.Status == 0)
+                                                                        {
+                                                                             <a asp-route-id="@item.Id" asp-action="Read" asp-controller="Report" class="dropdown-item">Read</a>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.post -->
+                                    <!-- /.col -->
+                                </div>
+                                <!-- /.row -->
+                            </div>
+
+                            <div class="tab-pane fade" id="repolice">
+                                <!-- Post -->
+                                <div class="post">
+                                    <div class="user-block">
+                                        <!-- /.card-header -->
+                                        <div class="card-body table-responsive p-0" style="height: 400px;">
+                                            <table class="table table-head-fixed text-nowrap">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="text-center">ID</th>
+                                                        <th class="text-center">Request Id</th>
+                                                        <th class="text-center">User</th>
+                                                        <th class="text-center">Status</th>
+                                                        <th class="text-center">Request Type</th>
+                                                        <th class="text-center">Details</th>
+                                                        <th class="text-center">Active</th>
+                                                        <th class="text-center">Create at</th>
+                                                        <th class="text-center">Update at</th>
+                                                        <th class="text-center">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @foreach (var item in reportPolice)
+                                                    {
+                                                        <tr>
+                                                            <td class="text-center">@item.Id</td>
+                                                            <td class="text-center">@item.RequestId</td>
+                                                            @{
+                                                                if(item.UserId != null)
+                                                                {
+                                                                    var name = await user.GetById("Users", item.UserId);
+
+                                                                    <td class="text-center">@name.FirstName @name.LastName</td>
+                                                                }
+                                                                if (item.Status == 0)
+                                                                {
+                                                                    <td class="text-center"><span class="badge badge-warning">Waiting</span></td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center"><span class="badge badge-success">Read</span></td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">@item.RequestType</td>
+                                                            <td class="text-center">@item.Details</td>
+                                                            <td class="text-center">@item.Stander.IsActive</td>
+                                                            @{
+                                                                if (item.Stander.CreatedAt != null)
+                                                                {
+                                                                    <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@item.Stander.CreatedAt</td>
+                                                                }
+
+                                                                if (item.Stander.ModifiedAt != null)
+                                                                {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                                }
+                                                            }
+                                                            <td class="text-center">
+                                                                <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                                </a>
+                                                                <div class="dropdown-menu dropdown-menu-end">
+                                                                     @{
+                                                                        if (@item.Status == 0)
+                                                                        {
+                                                                             <a asp-route-id="@item.Id" asp-action="Read" asp-controller="Report" class="dropdown-item">Read</a>
+                                                                        }
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.post -->
+                                    <!-- /.col -->
+                                </div>
+                                <!-- /.row -->
+                            </div>
+
+
+
+
+
+
+
+                            <!-- /.container-fluid -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+
+
+
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->

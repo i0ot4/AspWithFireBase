@@ -1,0 +1,523 @@
+﻿@model List<Users>
+@inject IUsersRepository user
+@inject IRequestMechanicRepository mechanic
+@inject IRequestPoliceRepository police
+@inject IRequestTripRepository trip
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <div class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1 class="m-0">Home</h1>
+                </div><!-- /.col -->
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item">
+                            <a>Maylzam</a>
+                        </li>
+                        <li class="breadcrumb-item active">Home</li>
+                    </ol>
+                </div><!-- /.col -->
+            </div><!-- /.row -->
+        </div><!-- /.container-fluid -->
+    </div>
+    <!-- /.content-header -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <!-- Small boxes (Stat box) -->
+            <div class="row">
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-add bg-info">
+                        <div class="inner">
+                            @{
+                                var count1 = await user.Count("Users", x => x.UserType == "Customer");
+                            }
+                            <h3>@count1</h3>
+
+                            <p>Customer Account</p>
+                        </div>
+                        <div class="icon">
+                            <img class="nav-icon" style="height: 150px; width:150px" src="~/icons/Customer.png" />
+                        </div>
+                        <a asp-controller="Customer" asp-action="Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-primary">
+                        <div class="inner">
+                            @{
+                                var count2 = await user.Count("Users", x => x.UserType == "TrafficPolice");
+                            }
+                            <h3>@count2</h3>
+
+                            <p>Traffic Policer Account</p>
+                        </div>
+                        <div class="icon">
+                            <img class="nav-icon" style="height: 150px; width:150px" src="~/icons/police-officer.png" />
+                        </div>
+                        <a asp-controller="TrafficPolice" asp-action="Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+                            @{
+                                var count3 = await user.Count("Users", x => x.UserType == "TaxiDriver");
+                            }
+                            <h3>@count3</h3>
+
+                            <p>Taxi Driver Account</p>
+                        </div>
+
+                        <img class="nav-icon" style="height: 150px; width:150px" src="~/icons/taxi-driver.png" />
+                        
+                        <a asp-controller="TaxiDriver" asp-action="Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                <!-- ./col -->
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+                            @{
+                                var count4 = await user.Count("Users", x => x.UserType == "Mechanic");
+                            }
+                            <h3>@count4</h3>
+
+                            <p>Mechanic Account</p>
+                        </div>
+                        <div class="icon">
+                            <img class="nav-icon" style="height: 150px; width:150px" src="~/icons/mechanic.png" />
+                        </div>
+                        <a asp-controller="Mechanic" asp-action="Index" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-info">
+                        <div class="inner">
+
+                            <p>New Customer Account</p>
+                        </div>
+                        
+                        <a asp-controller="Customer" asp-action="Add" class="small-box-footer">Add New <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-primary">
+                        <div class="inner">
+
+                            <p>New TrafficPolice Account</p>
+                        </div>
+                        
+                        <a asp-controller="TrafficPolice" asp-action="Add" class="small-box-footer">Add New <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-warning">
+                        <div class="inner">
+
+                            <p>New TaxiDriver Account</p>
+                        </div>
+                        
+                        <a asp-controller="TaxiDriver" asp-action="Add" class="small-box-footer">Add New <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-6">
+                    <!-- small box -->
+                    <div class="small-box bg-danger">
+                        <div class="inner">
+
+                            <p>New Mechanic Account</p>
+                        </div>
+                        
+                        <a asp-controller="Mechanic" asp-action="Add" class="small-box-footer">Add New <i class="fas fa-arrow-circle-right"></i></a>
+                    </div>
+                </div>
+
+                <!-- ./col -->
+            </div>
+            <!-- /.row --><div class="row">
+
+                <div class="col-md-12">
+
+                    <!-- MAP & BOX PANE -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Maylzam Members Map</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <div class="d-md-flex">
+                                <div class="p-1 flex-fill" style="overflow: hidden">
+                                    <!-- Map will be created here -->
+                                    <div class="row">
+                                        <div id="map" class="col-md-12" style="height: 325px; overflow: hidden">
+                                            <div class="map"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-pane-right bg-success pt-2 pb-2 pl-4 pr-4">
+                                    <div class="description-block mb-4">
+                                        @{
+                                            var taxi = await user.Count("Users", x => x.UserType == "TaxiDriver");
+                                            var trips = await trip.Count("TaxiDriverRequests");
+                                        }
+                                        <div class="sparkbar pad" data-color="#fff">TaxiDrivers Data</div>
+                                        <h5 class="description-header">@taxi Accounts</h5>
+                                        <span class="description-text">@trips Requests</span>
+                                    </div>
+                                    <hr />
+                                    <!-- /.description-block -->
+                                    <div class="description-block mb-4">
+                                        @{
+                                            var mechanics = await user.Count("Users", x => x.UserType == "Mechanic");
+                                            var requestMechanic = await trip.Count("MechanicRequests");
+                                        }
+                                        <div class="sparkbar pad" data-color="#fff">Mechanic Centers Data</div>
+                                        <h5 class="description-header">@mechanics Accounts</h5>
+                                        <span class="description-text">@requestMechanic Requests</span>
+                                    </div>
+                                    <hr />
+                                    <!-- /.description-block -->
+                                    <div class="description-block">
+                                        @{
+                                            var polices = await user.Count("Users", x => x.UserType == "TrafficPolice");
+                                            var requestPolice = await police.Count("TrafficPoliceRequests");
+                                        }
+                                        <div class="sparkbar pad" data-color="#fff">Traffic Police Data</div>
+                                        <h5 class="description-header">@polices Accounts</h5>
+                                        <span class="description-text">@requestPolice Requests</span>
+                                    </div>
+                                    <!-- /.description-block -->
+                                </div><!-- /.card-pane-right -->
+                            </div><!-- /.d-md-flex -->
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+                <!-- /.col -->
+                <div class="col-md-6">
+                    <!-- USERS LIST -->
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Latest Members</h3>
+                            @{
+                                var datecountUsers = DateTime.UtcNow.Date;
+                                var countAllUsers = await user.Count("Users", x => (x.Stander.CreatedAt == null ? false : x.Stander.CreatedAt.Value.ToDateTime().Date >= datecountUsers.AddDays(-7)));
+                            }
+                            <div class="card-tools">
+                                <span class="badge badge-danger">@countAllUsers New Members</span>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-20">
+                            <ul class="users-list clearfix">
+                                @{
+
+                                    var dateUsers = DateTime.UtcNow.Date;
+                                    var allUsers = await user.GetAllAsync("Users", x => (x.Stander.CreatedAt == null ? false : x.Stander.CreatedAt.Value.ToDateTime().Date >= dateUsers.AddDays(-7)));
+                                    if (allUsers != null)
+                                    {
+                                        int count = 0; // إضافة متغير للعد
+                                        foreach (var item in allUsers.ToList())
+                                        {
+                                            if (count >= 8) // التحقق من العد
+                                                break;
+                                                <li>
+                                                    <img src="@item.ProfilePicture" style="height:130px;width:130px" alt="User Image">
+                                                    <a class="users-list-name">@item.FirstName @item.LastName</a>
+                                                    <span class="users-list-date">@item.Stander.CreatedAt.Value.ToDateTime().ToString("dd MMMM")</span>
+                                            </li>
+                                            count++; // زيادة العد
+                                        }
+                                    }
+                                }
+                            </ul>
+                            <!-- /.users-list -->
+                        </div>
+                        <div class="card-footer text-center">
+                            <a href="javascript:">View All Users</a>
+                        </div>
+                        <!-- /.card-footer -->
+                    </div>
+                    <!--/.card -->
+                </div>
+
+
+                <!-- /.col -->
+                <div class="col-md-6">
+                    <!-- Info Boxes Style 2 -->
+                    <div class="info-box mb-3 bg-warning">
+                        <span class="info-box-icon"><img src="~/icons/unConfirm.png"/></span>
+
+                        <div class="info-box-content">
+                            @{
+                                var totalUnConfirm = await user.Count("Users", x => (x.UserType != "Admin" || x.UserType != "SuperAdmin" || x.UserType != "Customer") && x.Stander.IsConfirm == false);
+                            }
+                            <span class="info-box-text">TOTAL UNCONFIRM ACCOUNTS</span>
+                            <span class="info-box-number">@totalUnConfirm</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                    <div class="info-box mb-3 bg-success">
+                        <span class="info-box-icon"><img src="~/icons/check.png"></span>
+
+                        <div class="info-box-content">
+                            @{
+                                var totalConfirm = await user.Count("Users", x => (x.UserType != "Admin" || x.UserType != "SuperAdmin" || x.UserType != "Customer") && x.Stander.IsConfirm == true);
+                            }
+                            <span class="info-box-text">TOTAL CONFIRM ACCOUNTS</span>
+                            <span class="info-box-number">@totalConfirm</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                    <div class="info-box mb-3 bg-danger">
+                        <span class="info-box-icon"><img src="~/icons/delete-user.png"></span>
+
+                        <div class="info-box-content">
+                            @{
+                                var totalDeleted = await user.Count("Users", x => x.Stander.IsDelete == true);
+                            }
+                            <span class="info-box-text">TOTAL DELETED ACCOUNTS</span>
+                            <span class="info-box-number">@totalDeleted</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                    <div class="info-box mb-3 bg-info">
+                        <span class="info-box-icon"><img src="~/icons/block.png" /></span>
+
+                        <div class="info-box-content">
+                            @{
+                                var totalBlocked = await user.Count("Users", x => x.Stander.IsActive == false);
+                            }
+                            <span class="info-box-text">TOTAL BLOCKED ACCOUNTS</span>
+                            <span class="info-box-number">@totalBlocked</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                    <div class="info-box mb-3 bg-primary">
+                        <span class="info-box-icon"><img src="~/icons/team-meeting.png"></span>
+
+                        <div class="info-box-content">
+                            @{
+                                var totalAdministrators = await user.Count("Users", x => x.UserType == "Admin" || x.UserType == "SuperAdmin");
+                            }
+                            <span class="info-box-text">TOTAL Administrators ACCOUNTS</span>
+                            <span class="info-box-number">@totalAdministrators</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                    <!-- /.card -->
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">All Users Accounts</h3>
+                            <div class="card-tools">
+                                <div class="icon">
+                                    <a asp-action="Print" asp-controller="Users" class="btn btn-primary"><img class="nav-icon" style="height: 30px;width:30px" src="~/icons/printer.png" /></a>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body table-responsive p-0" style="height: 400px;">
+                            <table class="table table-head-fixed text-nowrap">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">ID</th>
+                                        <th class="text-center">Photo</th>
+                                        <th class="text-center">Name</th>
+                                        <th class="text-center">Address</th>
+                                        <th class="text-center">Phone</th>
+                                        <th class="text-center">User Type</th>
+                                        <th class="text-center">Delete</th>
+                                        <th class="text-center">Active</th>
+                                        <th class="text-center">Create at</th>
+                                        <th class="text-center">Update at</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-center">
+                                    @foreach (var item in Model.ToList())
+                                    {
+                                        <tr>
+                                            <td>@item.Id</td>
+                                            <td>
+                                                <img class="profile-user-img img-fluid img-circle"
+                                                 style="height:100px; width:100px"
+                                                 src="@item.ProfilePicture"
+                                                 alt="User profile picture">
+                                            </td>
+                                            <td class="text-center">@item.FirstName @item.LastName</td>
+                                            <td class="text-center">@item.Address</td>
+                                            <td class="text-center">@item.PhoneNumber</td>
+                                            <td class="text-center">@item.UserType</td>
+                                            @{
+                                                if (@item.Stander.IsDelete == true)
+                                                {
+                                                    <td class="text-center"><span class="badge badge-danger">ON</span></td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-center"><span class="badge badge-success">OFF</span></td>
+                                                }
+                                            }
+                                            <td class="text-center">@item.Stander.IsActive</td>
+                                            @{
+                                                if (item.Stander.CreatedAt != null)
+                                                {
+                                                                        <td class="text-center">@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                                }
+                                                else
+                                                {
+                                                                        <td class="text-center">@item.Stander.CreatedAt</td>
+                                                }
+
+                                                if (item.Stander.ModifiedAt != null)
+                                                {
+                                                                        <td class="text-center">@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                                }
+                                                else
+                                                {
+                                                                        <td class="text-center">@item.Stander.ModifiedAt</td>
+                                                }
+                                            }
+                                            <td>
+                                                <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                                </a>
+                                                <div class="dropdown-menu dropdown-menu-end">
+                                                    <a class="dropdown-item" asp-route-id="@item.Id" asp-action="Edit" asp-controller="@item.UserType">Edit</a>
+                                                    <a class="dropdown-item" asp-route-id="@item.Id" onclick="confirmDelete('@item.Id')">Delete</a>
+                                                    <a class="dropdown-item" asp-route-id="@item.Id" asp-action="Profile" asp-controller="@item.UserType">Profile</a>
+                                                    <a class="dropdown-item" asp-route-id="@item.Id" asp-action="Details" asp-controller="@item.UserType">Details</a>
+                                                    @{
+                                                        if (@item.Stander.IsActive == false)
+                                                        {
+                                                            <a asp-route-id="@item.Id" onclick="confirmActive('@item.Id')" class="dropdown-item">Active</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a asp-route-id="@item.Id" onclick="confirmDisActive('@item.Id')" class="dropdown-item">DisActive</a>
+                                                        }
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+        
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+<script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.14.0/firebase-firestore.js"></script>
+<script src="~/maps/js/Google-Maps-CenterLocation.js"></script>
+
+<script>
+    function confirmDelete(id) {
+        swal({
+            title: "هل أنت متأكد؟",
+            text: "بمجرد الحذف، لن تتمكن من استعادة هذا العميل!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    window.location.href = '/Users/Remove/' + id;
+                }
+            });
+    }
+    function confirmDisActive(id) {
+        swal({
+            title: "هل أنت متأكد؟",
+            text: "بمجرد الغاء التفعيل، لن يتمكن العميل من استخدام حسابة على التطبيق!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    window.location.href = '/Users/DisActive/' + id;
+                }
+            });
+    }
+    function confirmActive(id) {
+        swal({
+            title: "هل أنت متأكد؟",
+            text: "بمجرد التفعيل، سوف يتمكن العميل من استخدام حسابة على التطبيق!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        })
+            .then((willDelete) => {
+                if (willDelete) {
+                    window.location.href = '/Users/Active/' + id;
+                }
+            });
+    }
+        /*function printTable() {
+        var divToPrint = document.querySelector('.table-responsive'); // Use the correct class name here
+        newWin = window.open("");
+        newWin.document.write(divToPrint.outerHTML);
+        newWin.print();
+        newWin.close();
+    }
+
+    $(document).ready(function () {
+        $('.table').DataTable();
+    });*/
+</script>

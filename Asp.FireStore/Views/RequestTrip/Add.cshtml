@@ -1,0 +1,171 @@
+﻿@model RequestTrip
+
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+<form class="row" asp-action="Add" enctype="multipart/form-data">
+        <!-- Content Header (Page header) -->
+        <section class="content-header">
+            <div class="container-fluid">
+                <div class="row mb-2">
+                    <div class="col-sm-6">
+                        <h1>Create New Trip</h1>
+                    </div>
+                    <div class="col-sm-6">
+                        <ol class="breadcrumb float-sm-right">
+                            <li class="breadcrumb-item"><a href="#">TaxiDriver Trips</a></li>
+                            <li class="breadcrumb-item active">New Trip</li>
+                        </ol>
+                    </div>
+                </div>
+            </div><!-- /.container-fluid -->
+        </section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">General</h3>
+                            
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="datetime" asp-for="Stander.CreatedAt" hidden />
+                        <div class="card-body">
+                            <div class="form-group">
+                                <label asp-for="CurrentLocation"></label>
+                                <input id="currentLocation" name="currentLocation" class="form-control" asp-for="CurrentLocation" readonly>
+                                <span class="text-danger" asp-validation-for="CurrentLocation"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="TargetLocation"></label>
+                                <input id="targetLocation" name="targetLocation" class="form-control" asp-for="TargetLocation" readonly>
+                                <span class="text-danger" asp-validation-for="TargetLocation"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputDescription" asp-for="Details"></label>
+                                <textarea id="inputDescription" class="form-control" asp-for="Details"></textarea>
+                                <span class="text-danger" asp-validation-for="Details"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>Distance</label>
+                                <input id="distance" class="form-control" readonly>
+                            </div>
+                            <div class="form-group">
+                                <label>Duration</label>
+                                <input id="duration" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+
+                <div class="col-md-6">
+                    <div class="card card-secondary">
+                        <div class="card-header">
+                            <h3 class="card-title">budget</h3>
+
+                            <div class="card-tools">
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse" title="collapse">
+                                    <i class="fas fa-minus"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="card-body" id="map"></div>
+                        
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+                <!-- /.card -->
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <a href="#" class="btn btn-secondary">Cancel</a>
+                    <input type="submit" value="Create" class="btn btn-success float-right">
+                </div>
+            </div>
+        </section>
+        <!-- /.content -->
+    </form>
+</div>
+<!-- /.content-wrapper -->
+
+<script>
+
+    var map;
+    var markers = [];
+    var directionsService;
+    var directionsRenderer;
+
+    function initMap() {
+        directionsService = new google.maps.DirectionsService();
+        directionsRenderer = new google.maps.DirectionsRenderer();
+
+        map = new google.maps.Map(document.getElementById('map'), {
+            center: { lat: 15.335416, lng: 44.181946 },
+            zoom: 16
+        });
+
+        directionsRenderer.setMap(map);
+
+        // Add a click event handler to the map.
+        google.maps.event.addListener(map, 'click', function (event) {
+            // Limit the number of markers on the map to two (for current and target locations).
+            if (markers.length >= 2) {
+                return;
+            }
+
+            
+
+            // Add a new marker to the map at the clicked location.
+            var marker = new google.maps.Marker({
+                position: event.latLng,
+                map: map
+            });
+
+            markers.push(marker);
+
+            // Update the form inputs for current and target locations.
+            if (markers.length == 1) {
+                document.getElementById('currentLocation').value = event.latLng.lat() + ', ' + event.latLng.lng();
+            } else if (markers.length == 2) {
+                document.getElementById('targetLocation').value = event.latLng.lat() + ', ' + event.latLng.lng();
+
+                // Calculate and display the route.
+                calculateAndDisplayRoute(directionsService, directionsRenderer);
+            }
+        });
+    }
+
+    function calculateAndDisplayRoute(directionsService, directionsRenderer) {
+        directionsService.route(
+            {
+                origin: markers[0].getPosition(),
+                destination: markers[1].getPosition(),
+                travelMode: 'DRIVING'
+            },
+            function (response, status) {
+                if (status === 'OK') {
+                    directionsRenderer.setDirections(response);
+
+                    // Get distance and duration
+                    var distance = response.routes[0].legs[0].distance.text;
+                    var duration = response.routes[0].legs[0].duration.text;
+
+                    // Display distance and duration
+                    document.getElementById('distance').value = distance;
+                    document.getElementById('duration').value = duration;
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            });
+    }
+
+</script>

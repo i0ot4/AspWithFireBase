@@ -1,0 +1,463 @@
+﻿@model Users
+@*
+@inject ITaxiDriverTripRepository triprepositry
+@inject IAutomMechanicRequestReposiyory maintenancerepositry
+@inject ITrafficPoliceRequestReposiyory policerepositry
+
+@inject ITaxiDriverReportRepository taxireportrepositry
+@inject IAutomMechanicReportReposiyory autoreportrepositry
+
+@{
+
+    var customerTripsCount = triprepositry.Entities.Count(x => x.IsDelete == false && x.IsActive == true && x.CustomerId == Model.Id);
+    var customerTripsItems = await triprepositry.GetAll(x => x.IsDelete == false && x.IsActive == true && x.CustomerId == Model.Id);
+
+    var customerPoliceRequestCount = policerepositry.Entities.Count(x => x.IsDelete == false && x.IsActive == true && x.CustomerId == Model.Id);
+    var customerPoliceRequestItems = await policerepositry.GetAll(x => x.IsDelete == false && x.IsActive == true && x.CustomerId == Model.Id);
+
+    var customerMaintenanceRequestCount = maintenancerepositry.Entities.Count(x => x.IsDelete == false && x.IsActive == true && x.CustomerId == Model.Id);
+    var customerMaintenanceRequestItems = await maintenancerepositry.GetAll(x => x.IsDelete == false && x.IsActive == true && x.CustomerId == Model.Id);
+
+    var customerTaxiRportItems = await taxireportrepositry.GetAll(x => x.IsDelete == false && x.IsActive == true && x.CustomerId == Model.Id);
+
+    var customerAutoRportItems = await autoreportrepositry.GetAll(x => x.IsDelete == false && x.IsActive == true && x.CustomerId == Model.Id);
+   
+}*@
+
+
+
+
+
+
+
+<!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>Profile</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">Customer Profile</li>
+            </ol>
+          </div>
+        </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-md-3">
+
+            <!-- Profile Image -->
+            <div class="card card-primary card-outline">
+              <div class="card-body box-profile">
+                <div class="text-center">
+                  <img class="profile-user-img img-fluid img-circle"
+                       src="@Model.ProfilePicture"
+                       alt="User profile picture">
+                </div>
+                <h3 class="profile-username text-center">
+                    <label id="inputName">@Model.FirstName @Model.LastName</label>
+                </h3>
+                
+                <p class="text-muted text-center">@Model.UserType</p>
+                <ul class="list-group list-group-unbordered mb-3">
+                  <li class="list-group-item">
+                    <b>Trips</b> <a class="float-right">@*@customerTripsCount*@</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Request AutoMechanic</b> <a class="float-right">@*@customerMaintenanceRequestCount*@</a>
+                  </li>
+                  <li class="list-group-item">
+                    <b>Request Police</b> <a class="float-right">@*@customerPoliceRequestCount*@</a>
+                  </li>
+                </ul>
+
+                <a asp-route-id="@Model.Id" asp-action="Add" asp-controller="TaxiDriverTrip" class="btn btn-warning btn-block"><b>Request Trip</b></a>
+                <a asp-route-id="@Model.Id" asp-action="Add" asp-controller="AutoMechanicRequest" class="btn btn-info btn-block"><b>Request AutoMechanic</b></a>
+                <a asp-route-id="@Model.Id" asp-action="Add" asp-controller="TrafficPoliceRequest" class="btn btn-primary btn-block"><b>Request Police</b></a>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+
+            <!-- /.card -->
+          </div>
+
+
+
+          
+          <!-- /.col -->
+          <div class="col-md-9">
+            <div class="card card-info">
+              <div class="card-header p-2">
+                <ul class="nav nav-pills">
+                  <li class="nav-item"><a class="nav-link active" href="#activity" data-toggle="tab">Trips Requests</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#timeline" data-toggle="tab">AutoMechanic Requests</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#settings" data-toggle="tab">Police Requests</a></li>
+                </ul>
+              </div><!-- /.card-header -->
+              <div class="card-body">
+                <div class="tab-content">
+
+
+
+
+                  <div class="active tab-pane" id="activity">
+                    <!-- Post -->
+                    <div class="post">
+                      <div class="user-block">
+                         <!-- /.card-header -->
+
+              <div class="card-body table-responsive p-0" style="height: 400px;">
+                <table class="table table-head-fixed text-nowrap">
+                  <thead>
+                    <tr>
+                      <th class="text-center">ID</th>
+                      <th class="text-center">Customer Id</th>
+                      <th class="text-center">Current Location</th>
+                      <th class="text-center">End Location</th>
+                      <th class="text-center">IsActive</th>
+                      <th class="text-center">Create at</th>
+                      <th class="text-center">Update at</th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                      @*@foreach(var item in (customerTripsItems)){
+                    <tr>
+                      <td class="text-center">@item.Id</td>
+                      <td class="text-center">@item.CustomerId</td>
+                      <td class="text-center">@item.CurrentLocation.Latitude , @item.CurrentLocation.Longitude</td>
+                      <td class="text-center">@item.TargetLocation.Latitude , @item.TargetLocation.Longitude</td>
+                      <td class="text-center">@item.IsActive</td>
+                      <td class="text-center">@item.CreatedAt</td>
+                      <td class="text-center">@item.Updated_At</td>
+                      <td>
+
+                                      
+                              <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                               
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                  </a>
+                                  <div class="dropdown-menu dropdown-menu-end">
+                                      <a class="dropdown-item" asp-route-id="@item.Id" asp-action="Add" asp-controller="TaxiDriverReport">Report</a>
+                                  </div>
+                                  </td>
+                      
+                    </tr>
+                    }*@
+                  </tbody>
+                </table>
+              </div>
+
+                    </div>
+                    <!-- /.post -->
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+
+
+
+
+
+      <div class="tab-pane fade" id="timeline">
+                    <!-- Post -->
+                    <div class="post">
+                      <div class="user-block">
+                         <!-- /.card-header -->
+              <div class="card-body table-responsive p-0" style="height: 400px;">
+                <table class="table table-head-fixed text-nowrap">
+                  <thead>
+                    <tr>
+                      <th class="text-center">ID</th>
+                      <th class="text-center">Customer Id</th>
+                      <th class="text-center">Current Location</th>
+                      <th class="text-center">Description</th>
+                      <th class="text-center">IsActive</th>
+                      <th class="text-center">Create at</th>
+                      <th class="text-center">Update at</th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>@*
+                      @foreach(var item in (customerMaintenanceRequestItems)){
+                    <tr>
+                      <td class="text-center">@item.Id</td>
+                      <td class="text-center">@item.CustomerId</td>
+                      <td class="text-center">@item.CurrentLocation.Latitude , @item.CurrentLocation.Longitude</td>
+                      <td class="text-center">@item.Description</td>
+                      <td class="text-center">@item.IsActive</td>
+                      <td class="text-center">@item.CreatedAt</td>
+                      <td class="text-center">@item.Updated_At</td>
+                      <td>
+
+                                      
+                              <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                               
+                                                    <i class="bi bi-three-dots-vertical"></i>
+                                  </a>
+                                  <div class="dropdown-menu dropdown-menu-end">
+                                      <a class="dropdown-item" asp-route-id="@item.Id" asp-action="Add" asp-controller="AutoMechanicReport">Report</a>
+                                  </div>
+                                  </td>
+                      
+                    </tr>
+                    }*@
+                  </tbody>
+                </table>
+              </div>
+
+                    </div>
+                    <!-- /.post -->
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+
+
+
+      <div class="tab-pane fade" id="settings">
+                    <!-- Post -->
+                    <div class="post">
+                      <div class="user-block">
+                         <!-- /.card-header -->
+              <div class="card-body table-responsive p-0" style="height: 400px;">
+                <table class="table table-head-fixed text-nowrap">
+                  <thead>
+                    <tr>
+                      <th class="text-center">ID</th>
+                      <th class="text-center">Customer Id</th>
+                      <th class="text-center">Current Location</th>
+                      <th class="text-center">Description</th>
+                      <th class="text-center">IsActive</th>
+                      <th class="text-center">Create at</th>
+                      <th class="text-center">Update at</th>
+                    </tr>
+                  </thead>
+                  <tbody>@*
+                      @foreach(var item in (customerPoliceRequestItems)){
+                    <tr>
+                      <td class="text-center">@item.Id</td>
+                      <td class="text-center">@item.CustomerId</td>
+                      <td class="text-center">@item.CurrentLocation.Latitude , @item.CurrentLocation.Longitude</td>
+                      <td class="text-center">@item.Description</td>
+                      <td class="text-center">@item.IsActive</td>
+                      <td class="text-center">@item.CreatedAt</td>
+                      <td class="text-center">@item.Updated_At</td>
+                      
+                    </tr>
+                    }*@
+                  </tbody>
+                </table>
+              </div>
+
+                    </div>
+                    <!-- /.post -->
+
+
+
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+
+
+
+
+
+      <!-- /.container-fluid -->
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+
+                <!-- Reports Tables -->
+
+    <!-- /.col -->
+          <div class="col-md-12">
+            <div class="card card-danger">
+              <div class="card-header p-2">
+                <ul class="nav nav-pills">
+                  <li class="nav-item"><a class="nav-link active" href="#retrip" data-toggle="tab">Trips Reports</a></li>
+                  <li class="nav-item"><a class="nav-link" href="#reauto" data-toggle="tab">AutoMechanic Reports</a></li>
+                </ul>
+              </div><!-- /.card-header -->
+              <div class="card-body">
+                <div class="tab-content">
+
+
+
+
+                  <div class="active tab-pane" id="retrip">
+                    <!-- Post -->
+                    <div class="post">
+                      <div class="user-block">
+                         <!-- /.card-header -->
+
+              <div class="card-body table-responsive p-0" style="height: 400px;">
+                <table class="table table-head-fixed text-nowrap">
+                  <thead>
+                    <tr>
+                      <th class="text-center">ID</th>
+                      <th class="text-center">Type</th>
+                      <th class="text-center">Description</th>
+                      <th class="text-center">Status</th>
+                      <th class="text-center">IsActive</th>
+                      <th class="text-center">Create at</th>
+                      <th class="text-center">Update at</th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody@*>
+                      @foreach(var item in (customerTaxiRportItems)){
+                    <tr>
+                      <td class="text-center">@item.Id</td>
+                      <td class="text-center">@item.Type</td>
+                      <td class="text-center">@item.Description</td>
+                      @{
+                              if(item.Status == "UnderReview"){
+                                  <td class="bg-warning text-center">@item.Status</td>
+                              }else{
+                                  <td class="bg-success text-center">@item.Status</td>
+                              }
+                          }
+                      <td class="text-center">@item.IsActive</td>
+                      <td class="text-center">@item.CreatedAt</td>
+                      <td class="text-center">@item.Updated_At</td>
+                      <td>
+
+                                      
+                              <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                  <i class="bi bi-three-dots-vertical"></i>
+                                  </a>
+                                  <div class="dropdown-menu dropdown-menu-end">
+                                      @{
+                                                        var status = "UnderReview";
+                                                        if (@item.Status == "UnderReview")
+                                                        {
+                                                            status = "Reviewed";
+                                                        }
+                                                    }
+                                                    <a asp-all-route-data="@(new Dictionary<string, string>{ { "id" , @item.Id.ToString() } ,{ "Userid" , Model.Id.ToString() } })" asp-action="@status" asp-controller="TaxiDriverReport" class="dropdown-item">@status</a>
+                                  </div>
+                                  </td>
+                      
+                    </tr>
+                    }*@
+                  </tbody>
+                </table>
+              </div>
+
+                    </div>
+                    <!-- /.post -->
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+
+
+
+
+
+      <div class="tab-pane fade" id="reauto">
+                    <!-- Post -->
+                    <div class="post">
+                      <div class="user-block">
+                         <!-- /.card-header -->
+              <div class="card-body table-responsive p-0" style="height: 400px;">
+                <table class="table table-head-fixed text-nowrap">
+                  <thead>
+                    <tr>
+                      <th class="text-center">ID</th>
+                      <th class="text-center">Type</th>
+                      <th class="text-center">Description</th>
+                      <th class="text-center">Status</th>
+                      <th class="text-center">IsActive</th>
+                      <th class="text-center">Create at</th>
+                      <th class="text-center">Update at</th>
+                      <th class="text-center">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>@*
+                      @foreach(var item in (customerAutoRportItems)){
+                    <tr>
+                      <td class="text-center">@item.Id</td>
+                      <td class="text-center">@item.Type</td>
+                      <td class="text-center">@item.Description</td>
+                      @{
+                              if(item.Status == "UnderReview"){
+                                  <td class="bg-warning text-center">@item.Status</td>
+                              }else{
+                                  <td class="bg-success text-center">@item.Status</td>
+                              }
+                          }
+                      <td class="text-center">@item.IsActive</td>
+                      <td class="text-center">@item.CreatedAt</td>
+                      <td class="text-center">@item.Updated_At</td>
+                      <td>
+
+                                      
+                              <a href="#" data-bs-toggle="dropdown" class="nav-icon pe-md-0">
+                                  <i class="bi bi-three-dots-vertical"></i>
+                                  </a>
+                                  <div class="dropdown-menu dropdown-menu-end">
+                                      @{
+                                                        var status = "UnderReview";
+                                                        if (@item.Status == "UnderReview")
+                                                        {
+                                                            status = "Reviewed";
+                                                        }
+                                                    }
+                                                    <a asp-all-route-data="@(new Dictionary<string, string>{ { "id" , @item.Id.ToString() } ,{ "Userid" , Model.Id.ToString() } })" asp-action="@status" asp-controller="AutoMechanicReport" class="dropdown-item">@status</a>
+                                  </div>
+                                  </td>
+                      
+                    </tr>
+                    }*@
+                  </tbody>
+                </table>
+              </div>
+
+                    </div>
+                    <!-- /.post -->
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+
+
+
+
+      
+
+
+      <!-- /.container-fluid -->
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+
+    </div>
+    </div>
+    
+  
+  </section>
+    <!-- /.content -->
+    
+
+  </div>
+  <!-- /.content-wrapper -->

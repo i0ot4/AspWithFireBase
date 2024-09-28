@@ -1,0 +1,392 @@
+﻿<!DOCTYPE html>
+
+@inject IUsersRepository user
+@inject IVehicleRepository vehicle
+@inject IEmployeeRepository employee
+@inject IReportRepository report
+
+@{
+
+    var userProfilePicture = User.FindFirst("UserProfilePicture")?.Value;
+    var userFirstName = User.FindFirst("UserFirstName")?.Value;
+    var userLastName = User.FindFirst("UserLastName")?.Value;
+}
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="~/plugins/fontawesome-free/css/all.min.css">
+    <!-- Ionicons -->
+    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <!-- Tempusdominus Bootstrap 4 -->
+    <link rel="stylesheet" href="~/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- iCheck -->
+    <link rel="stylesheet" href="~/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- JQVMap -->
+    <link rel="stylesheet" href="~/plugins/jqvmap/jqvmap.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/maps/css/Google-Maps.css">
+
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="~/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
+    <link rel="stylesheet" href="~/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker -->
+    <link rel="stylesheet" href="~/plugins/daterangepicker/daterangepicker.css">
+    <!-- summernote -->
+    <link rel="stylesheet" href="~/plugins/summernote/summernote-bs4.min.css">
+</head>
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+
+        <!-- Preloader -->
+        <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__wobble" src="~/icons/AppLogo/Maylzam-dark.png" alt="MaylzamLogo" height="300" width="500">
+        </div>
+
+        <!-- Navbar -->
+        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+            <!-- Left navbar links -->
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a asp-action="Index" asp-controller="Home" class="nav-link">Home</a>
+                </li>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="#" class="nav-link">Contact</a>
+                </li>
+            </ul>
+            <!-- Right navbar links -->
+            <ul class="navbar-nav ml-auto">
+                <!-- Notifications Dropdown Menu -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link" data-toggle="dropdown" href="#">
+                        <img src="~/icons/settings.png" style="height:25px; width:25px"/>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                        <span class="dropdown-item dropdown-header">@userFirstName @userLastName</span>
+                        <div class="dropdown-divider"></div>
+                        <a asp-action="ChangePassword" asp-controller="Home" class="dropdown-item">
+                            <img src="~/icons/reset-password.png" style="height:25px; width:25px" /> Reset Your Passowrd
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <img src="~/icons/edit-info.png" style="height:25px; width:25px" /> Edit Your Profile
+                            <span class="float-right text-muted text-sm">12 hours</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item">
+                            <i class="fas fa-file mr-2"></i> 3 new reports
+                            <span class="float-right text-muted text-sm">2 days</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
+                        <i class="fas fa-th-large"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+        <!-- /.navbar -->
+        <!-- Main Sidebar Container -->
+        <aside class="main-sidebar sidebar-dark-primary elevation-4">
+            <!-- Brand Logo -->
+            <a href="index3.html" class="brand-link">
+                <img src="~/icons/Maylzam.png" alt="Maylzam Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+                <span class="brand-text font-weight-light">Maylzam</span>
+            </a>
+
+
+
+
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <!-- Sidebar user panel (optional) -->
+                <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+                    <div class="image">
+                        
+                        <img src="@userProfilePicture" class="img-circle elevation-2" alt="User Image">
+                    </div>
+                    <div class="info">
+                        <a href="#" class="d-block">@userFirstName @userLastName</a>
+                    </div>
+                </div>
+
+                <!-- SidebarSearch Form -->
+                <div class="form-inline">
+                    <div class="input-group" data-widget="sidebar-search">
+                        <input class="form-control form-control-sidebar" type="search" placeholder="Search" aria-label="Search">
+                        <div class="input-group-append">
+                            <button class="btn btn-sidebar">
+                                <i class="fas fa-search fa-fw"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar Menu -->
+                <nav class="mt-2">
+                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+                        <li class="nav-item">
+                            <a asp-controller="Users" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/home.png" />
+                                <p>
+                                    Home
+                                    @{
+                                        var dateUsers = DateTime.UtcNow.Date;
+                                        var countUsers = await user.Count("Users", x => (x.Stander.CreatedAt == null ? false : x.Stander.CreatedAt.Value.ToDateTime().Date == dateUsers));
+                                        if (countUsers != 0)
+                                        {
+                                            <span class="right badge badge-danger">New</span>
+                                        }
+                                    }
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Customer" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/Customer.png" />
+                                <p>
+                                    Customer Accounts
+                                    @{
+                                        var dateCustomer = DateTime.UtcNow.Date;
+                                        var countCustomer = await user.Count("Users", x => x.UserType == "Customer" && (x.Stander.CreatedAt == null ? false : x.Stander.CreatedAt.Value.ToDateTime().Date == dateCustomer));
+                                        if (countCustomer != 0)
+                                        {
+                                            <span class="right badge badge-danger">New</span>
+                                        }
+                                    }
+
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="TaxiDriver" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/taxi-driver.png" />
+                                <p>
+                                    TaxiDriver Accounts
+                                    @{
+                                        var countTaxiDriver = await user.Count("Users", x => x.UserType == "TaxiDriver" && x.Stander.IsConfirm == false);
+                                        if (countTaxiDriver != 0)
+                                        {
+                                            <span class="right badge badge-danger">New</span>
+                                        }
+                                    }
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Mechanic" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/mechanic.png" />
+                                <p>
+                                    Mechanic Accounts
+                                    @{
+                                        var countMechanic = await user.Count("Users", x => x.UserType == "Mechanic" && x.Stander.IsConfirm == false);
+                                        if (countMechanic != 0)
+                                        {
+                                            <span class="right badge badge-danger">New</span>
+                                        }
+                                    }
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="TrafficPolice" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/police-officer.png" />
+                                <p>
+                                    TrafficPolice Accounts
+                                    @{
+                                        var countTrafficPolice = await user.Count("Users", x => x.UserType == "TrafficPolice" && x.Stander.IsConfirm == false);
+                                        if (countTrafficPolice != 0)
+                                        {
+                                            <span class="right badge badge-danger">New</span>
+                                        }
+                                    }
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Vehicle" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/taxi-car.png" />
+                                <p>
+                                    Vehicle
+                                    @{
+                                        var countVehicle = await vehicle.Count("Vehicle", x => x.Stander.IsConfirm == false);
+                                        if (countVehicle != 0)
+                                        {
+                                            <span class="right badge badge-danger">New</span>
+                                        }
+                                    }
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Employee" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/workers.png" />
+                                <p>
+                                    Employee
+                                    @{
+                                        var dateEmployee = DateTime.UtcNow.Date;
+                                        var countEmployee = await employee.Count("Employee", x => x.Stander.IsDelete == false && x.Stander.IsActive == true
+                                        && (x.Stander.CreatedAt == null ? false : x.Stander.CreatedAt.Value.ToDateTime().Date == dateEmployee));
+                                        if (countEmployee != 0)
+                                        {
+                                            <span class="right badge badge-danger">New</span>
+                                        }
+                                    }
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="RequestTrip" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/trip-Requests.png" />
+                                <p>
+                                    Trip Requests
+
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="RequestPolice" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/police-Requests.png" />
+                                <p>
+                                    Police Requests
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="RequestMechanic" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/mechanic-Request.png" />
+                                <p>
+                                    Mechanic Requests
+                                </p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a asp-controller="Report" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/report.png" />
+                                <p>
+                                    Reports
+                                    @{
+                                        var countReport = await report.Count("Reports", x => x.Stander.IsConfirm == false);
+                                        if (countReport != 0)
+                                        {
+                                            <span class="right badge badge-danger">New</span>
+                                        }
+                                    }
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Slides" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/gallery.png" />
+                                <p>
+                                    Slides
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="WebAdministration" asp-action="Index" class="nav-link">
+                                <img class="nav-icon" src="~/icons/manager.png" />
+                                <p>
+                                    Administration
+                                </p>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a asp-controller="Home" asp-action="Logout" class="nav-link">
+                                <img class="nav-icon" src="~/icons/logout.png" />
+                                <p>
+                                    Logout
+                                </p>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- /.sidebar-menu -->
+            </div>
+            <!-- /.sidebar -->
+        </aside>
+
+
+    </div>
+    <div>
+        @RenderBody()
+    </div>
+
+    <footer class="main-footer">
+        <strong>Copyright &copy; 2023-2024 <a>Maylzam</a>.</strong>
+        All rights reserved.
+        <div class="float-right d-none d-sm-inline-block">
+            <b>Version</b> 3.2.0
+        </div>
+    </footer>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="~/plugins/jquery/jquery.min.js"></script>
+    <!-- AdminLTE App -->
+    <script src="~/dist/js/adminlte.js"></script>
+
+
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDlZnj5L-QrqkBWTRrNCLQdYUYqz_ia2IM&loading=async&callback=initMap&v=weekly"></script>
+
+    <!-- Bootstrap 4 -->
+    <script src="~/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- DataTables  & Plugins -->
+    <script src="~/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="~/plugins/datatables-responsive/js/dataTables.responsive.js"></script>
+
+    <script src="~/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+
+    <script>
+        // زر الطباعة
+        document.getElementById('printBtn').addEventListener("click", function () {
+            var originalBodyStyle = document.body.style.cssText;
+            document.body.style.cssText = 'color-adjust: exact; -webkit-print-color-adjust: exact;';
+            window.print();
+            document.body.style.cssText = originalBodyStyle;
+        });
+
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+        });
+    </script>
+
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

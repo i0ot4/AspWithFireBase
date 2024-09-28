@@ -1,0 +1,155 @@
+﻿
+
+@model List<Users>
+@inject IUsersRepository user
+
+<div class="wrapper">
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+      <div class="container-fluid">
+        <div class="row mb-2">
+          <div class="col-sm-6">
+            <h1>DataTables</h1>
+          </div>
+          <div class="col-sm-6">
+            <ol class="breadcrumb float-sm-right">
+              <li class="breadcrumb-item"><a href="#">Home</a></li>
+              <li class="breadcrumb-item active">DataTables</li>
+            </ol>
+          </div>
+        </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                    <button class="btn btn-primary float-right" id="printBtn">طباعة</button>
+                </div>
+                </div>
+      </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+        <div class="row">
+
+
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                @{
+                    var date = DateTime.Now.ToShortDateString();
+                    var time = DateTime.Now.ToShortTimeString();
+
+                    var userFirstName = User.FindFirst("UserFirstName")?.Value;
+                    var userLastName = User.FindFirst("UserLastName")?.Value;
+                    var AdminId = User.FindFirst("UserId")?.Value;
+                    var userType = User.FindFirst("UserType")?.Value;
+                }
+                <div class="float-right">
+                <h3 class="card-title">User Type: @userType</h3>
+                <br />
+                <h3 class="card-title">User : @userFirstName @userLastName</h3>
+                <br />
+                <h3 class="card-title">User Id : @AdminId</h3>
+                </div>
+               
+                <div>
+                <h3 class="card-title">Maylzam Application</h3>
+                <br />
+                <h3 class="card-title">Users Info</h3>
+                <br />
+                <h3 class="card-title">Date: @date</h3>
+                <br />
+                <h3 class="card-title">Time: @time</h3>
+                </div>
+              </div>
+              <!-- /.card-header -->
+              <div class="card-body">
+                <table id="example1" class="table table-bordered table-striped">
+                  <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>User Type</th>
+                    <th>Phone</th>
+                    <th>Delete</th>
+                    <th>Active</th>
+                    <th>Create at</th>
+                    <th>Update at</th>
+                  </tr>
+                  </thead>
+                 <tbody>
+                        @foreach (var item in Model.ToList())
+                        {
+                            <tr>
+                                <td >@item.FirstName @item.LastName</td>
+                                <td>@item.Address</td>
+                                <td>@item.UserType</td>
+                                <td>@item.PhoneNumber</td>
+                                @{
+                                    if (@item.Stander.IsDelete == true)
+                                    {
+                                            <td class="text-center"><span class="badge badge-danger">ON</span></td>
+                                    }
+                                    else
+                                    {
+                                            <td class="text-center"><span class="badge badge-success">OFF</span></td>
+                                    }
+                                    
+                                    <td>@item.Stander.IsActive</td>
+                                    if (item.Stander.CreatedAt != null)
+                                    {
+                                            <td>@item.Stander.CreatedAt.Value.ToDateTime()</td>
+                                    }
+                                    else
+                                    {
+                                            <td>@item.Stander.CreatedAt</td>
+                                    }
+
+                                    if (item.Stander.ModifiedAt != null)
+                                    {
+                                            <td>@item.Stander.ModifiedAt.Value.ToDateTime()</td>
+                                    }
+                                    else
+                                    {
+                                            <td>@item.Stander.ModifiedAt</td>
+                                    }
+                                }
+                                
+                                
+                            </tr>
+                        }
+                    </tbody>
+                  <tfoot>
+                  <tr>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>User Type</th>
+                    <th>Phone</th>
+                    <th>Delete</th>
+                    <th>Active</th>
+                    <th>Create at</th>
+                    <th>Update at</th>
+                  </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+          </div>
+
+
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+      </div>
+      <!-- /.container-fluid -->
+    </section>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+</div>
+<!-- ./wrapper -->
